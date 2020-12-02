@@ -15,7 +15,7 @@ try {
             String id="1";
             var sql = "select * from user where user.id_code="+id;
             var statement = conn.prepareStatement(sql);
-            var resultSet = statement.executeQuery();
+            var resultSet = statement.execute   xQuery();
             
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();

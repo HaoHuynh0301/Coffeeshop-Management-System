@@ -3,17 +3,13 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
 import com.haothuan.Main_project.*;
 import com.sun.jdi.Value;
 
@@ -33,7 +29,6 @@ public class Screen extends JFrame{
     private JComboBox combobox_Method;
     private JList list_History;
     private JButton btn_Back;
-    private JButton btn_LogOut;
     private JTextField txt_discount_code;
     private Icon icon = new ImageIcon("/Users/macos/Documents/Java Project/Data/Images/searchinglogo.png");
     private JTextField txt_find;
@@ -48,8 +43,11 @@ public class Screen extends JFrame{
     private JLabel txt_Text_Quantity;
     private JLabel txt_Text_edit_product_list;
     private JScrollPane pannel_listhistory;
+    private JComboBox comboBox_sort=new JComboBox();
     private JButton btn_Submit;
     JButton button = new JButton();
+    private Functions function=new Functions();
+
 
 
     //Get now date
@@ -69,14 +67,15 @@ public class Screen extends JFrame{
     private boolean FLAG_order=true;
 
     //Flag for Edit Product List
-    private boolean Change_Code;
+    private static int Change_Code=1;
 
     //Flag for button Sign up
     private boolean FLAG=true;
 
-    //Components for Discount
+    //Components for ComboBox_sort
+    DefaultListModel<String> model_comboBox_sort;
 
-    //Components for ComboBox
+    //Components for ComboBox_payment_method
     DefaultListModel<String> model_comboBox;
     static ArrayList<Customer_payment_method> arr_method;
     private static Customer_payment_method method;
@@ -111,8 +110,11 @@ public class Screen extends JFrame{
         btn_edit.setVisible(true);
         btn_Logout_2.setVisible(false);
         txt_Text_edit_product_list.setVisible(false);
+        btn_add_product.setVisible(false);
+        btn_reduce_product.setVisible(false);
 
-        //Setup for JoptionPane
+        //Setup for insert into comboBox sort
+        model_comboBox_sort=new DefaultListModel<>();
 
         //Setup for insert into ComboBox Method
         model_comboBox=new DefaultListModel<>();
@@ -156,8 +158,25 @@ public class Screen extends JFrame{
         btn_add_product.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Change_Code=true;
-                ChangeListProduct(Change_Code);
+                var temp_new_product_name=txt_Quantity.getText().toString();
+                var temp_new_product_price=Integer.parseInt(txt_product_price.getText());
+                var temp_product_id= generateMyBigNumber(20);
+                PreparedStatement stmt= null;
+                try {
+                    stmt = (PreparedStatement) conn.prepareStatement("INSERT INTO product(product_id, product_type_code, product_price) VALUES(?, ?, ?)");
+                    stmt.setString(1, temp_new_product_name);
+                    stmt.setString(2, temp_product_id.toString());
+                    stmt.setInt(3, temp_new_product_price);
+                    int rs;
+                    rs = stmt.executeUpdate();
+                    if(rs!=-1) {
+                        JOptionPane.showMessageDialog(pannel_main, "Insert Succeed!!!");
+                        txt_Quantity.setText("");
+                        txt_product_price.setText("");
+                    }
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
 
@@ -165,8 +184,30 @@ public class Screen extends JFrame{
         btn_reduce_product.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Change_Code=false;
-                ChangeListProduct(Change_Code);
+                var temp_reduce_product_name=txt_Quantity.getText().toString();
+                var temp_product_id= generateMyBigNumber(20);
+                PreparedStatement stmt= null;
+                try {
+                    stmt = (PreparedStatement) conn.prepareStatement("SELECT * FROM product where product_id=?");
+                    stmt.setString(1, temp_reduce_product_name);
+                    var rs = stmt.executeQuery();
+                    if(rs.next()) {
+                        PreparedStatement stmt_2= null;
+                        stmt_2 = (PreparedStatement) conn.prepareStatement("DELETE FROM product where product_id=?");
+                        stmt_2.setString(1, temp_reduce_product_name);
+                        int rs_2=stmt_2.executeUpdate();
+                        if(rs_2!=-1) {
+                            JOptionPane.showMessageDialog(pannel_main, "Delete Succeed");
+                            txt_Quantity.setText("");
+                        }
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(pannel_main, "Error");
+                    }
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
 
@@ -189,6 +230,9 @@ public class Screen extends JFrame{
                         btn_Order.setVisible(false);
                         txt_Text_edit_product_list.setVisible(true);
                         pannel_listhistory.setVisible(false);
+                        btn_add_product.setVisible(true);
+                        btn_reduce_product.setVisible(true);
+                        btn_Logout_2.setVisible(true);
                         //asign Customer ID
                         Customer_ID=rs.getString("customer_id");
 
@@ -314,12 +358,17 @@ public class Screen extends JFrame{
                 btnLogin.setVisible(true);
                 btn_Back.setVisible(false);
                 btn_signup.setVisible(true);
-                btn_edit.setVisible(false);
+                btn_edit.setVisible(true);
                 model_comboBox.clear();
                 model_list_history.clear();
                 model.clear();
                 model_comboBox.clear();
                 pannel_login.setVisible(true);
+                btn_add_product.setVisible(false);
+                btn_reduce_product.setVisible(false);
+                txt_Text_edit_product_list.setVisible(false);
+                btn_Logout_2.setVisible(false);
+                pannel_listhistory.setVisible(true);
                 JOptionPane.showMessageDialog(pannel_main, "Logout Succeed!!!");
             }
         });
@@ -362,6 +411,7 @@ public class Screen extends JFrame{
 
                         //Insert payment method into ComboBox
                         insertPayMentMethod();
+                        insertSort();
                         JOptionPane.showMessageDialog(pannel_main, "Login Succeed!!!");
                         pannel_login.setVisible(false);
                     }
@@ -548,7 +598,17 @@ public class Screen extends JFrame{
             }
         });
 
-        //Even when select Jlist history
+        //Event when select JComboBox Sort
+//        comboBox_sort.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                JOptionPane.showMessageDialog(pannel_main, "wevefvre");
+//            }
+//        });
+
+
+
+        //Event when select Jlist history
         list_History.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -603,25 +663,6 @@ public class Screen extends JFrame{
         });
     }
 
-    //Function get new product name and price, insert into MySql
-    private void ChangeListProduct(boolean change_Code) {
-        if(change_Code==true) {
-            var temp_new_product_name=txt_Quantity.getText().toString();
-            var temp_new_product_price=txt_product_price.getText();
-            PreparedStatement stmt= null;
-            try {
-                stmt = (PreparedStatement) conn.prepareStatement("Insert into product values (?, ?)");
-
-                ResultSet rs=stmt.executeQuery();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-        else {
-
-        }
-    }
-
 
     //Insert data into JList History
     private void insertCustomerHistory() throws SQLException {
@@ -658,7 +699,15 @@ public class Screen extends JFrame{
         list_History.setModel(model_list_history);
     }
 
-    //Insert Method into JcomboBox
+    //Insert data into JComboBox Sort
+    private void insertSort() throws SQLException{
+        comboBox_sort.addItem("Price: increase");
+        comboBox_sort.addItem("Price: Decrease");
+        comboBox_sort.addItem("New");
+        comboBox_sort.addItem("Popular");
+    }
+
+    //Insert Method into JcomboBox Payment Method
     private void insertPayMentMethod() throws SQLException {
         PreparedStatement stmt= null;
         try {
