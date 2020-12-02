@@ -68,3 +68,6 @@ for(Product product : arr_Products) {
     model.addElement(product.getProduct_id());
 }
 list_product.setModel(model);
+    
+#Sort
+https://sites.google.com/site/ttkuzze/hoctap/java/sap-xep-lai-doi-tuong-trong-arraylist

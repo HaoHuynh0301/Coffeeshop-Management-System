@@ -43,11 +43,10 @@ public class Screen extends JFrame{
     private JLabel txt_Text_Quantity;
     private JLabel txt_Text_edit_product_list;
     private JScrollPane pannel_listhistory;
-    private JComboBox comboBox_sort=new JComboBox();
+    private JComboBox comboBox_sort;
     private JButton btn_Submit;
     JButton button = new JButton();
     private Functions function=new Functions();
-
 
 
     //Get now date
@@ -74,6 +73,8 @@ public class Screen extends JFrame{
 
     //Components for ComboBox_sort
     DefaultListModel<String> model_comboBox_sort;
+    ArrayList<String> arr_sort_code;
+    int Sort_Type_Code=0;
 
     //Components for ComboBox_payment_method
     DefaultListModel<String> model_comboBox;
@@ -115,6 +116,7 @@ public class Screen extends JFrame{
 
         //Setup for insert into comboBox sort
         model_comboBox_sort=new DefaultListModel<>();
+        arr_sort_code=new ArrayList<>();
 
         //Setup for insert into ComboBox Method
         model_comboBox=new DefaultListModel<>();
@@ -245,8 +247,6 @@ public class Screen extends JFrame{
                         list_product.setModel(model);
 
                         //Insert History of Customer into JList
-
-//                        insertCustomerHistory();
 
                         //Insert payment method into ComboBox
                         insertPayMentMethod();
@@ -423,6 +423,24 @@ public class Screen extends JFrame{
                 }
             }
         });
+
+        //Event for ComboBox Sort Type
+        class ItemChangeListener implements ItemListener{
+            @Override
+            public void itemStateChanged(ItemEvent event) {
+                if (event.getStateChange() == ItemEvent.SELECTED) {
+                    Object item = event.getItem();
+                    Sort_Type_Code=comboBox_sort.getSelectedIndex();
+                    model.clear();
+                    for(Product p : function.Sort(Sort_Type_Code, arr_Products)) {
+                        model.addElement(p.getProduct_id());
+                    }
+                    list_product.setModel(model);
+                }
+            }
+        }
+
+        comboBox_sort.addItemListener(new ItemChangeListener());
 
         //Button Sign Up event
         btn_signup.addActionListener(new ActionListener() {
@@ -701,10 +719,14 @@ public class Screen extends JFrame{
 
     //Insert data into JComboBox Sort
     private void insertSort() throws SQLException{
-        comboBox_sort.addItem("Price: increase");
-        comboBox_sort.addItem("Price: Decrease");
-        comboBox_sort.addItem("New");
-        comboBox_sort.addItem("Popular");
+        arr_sort_code.add("Price: increase");
+        arr_sort_code.add("Price: Decrease");
+        arr_sort_code.add("New");
+        arr_sort_code.add("Popular");
+        for(String s : arr_sort_code) {
+            comboBox_sort.addItem(s);
+        }
+
     }
 
     //Insert Method into JcomboBox Payment Method
