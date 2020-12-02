@@ -603,9 +603,25 @@ public class Screen extends JFrame{
         });
     }
 
+    //Function get new product name and price, insert into MySql
     private void ChangeListProduct(boolean change_Code) {
+        if(change_Code==true) {
+            var temp_new_product_name=txt_Quantity.getText().toString();
+            var temp_new_product_price=txt_product_price.getText();
+            PreparedStatement stmt= null;
+            try {
+                stmt = (PreparedStatement) conn.prepareStatement("Insert into product values (?, ?)");
 
+                ResultSet rs=stmt.executeQuery();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        else {
+
+        }
     }
+
 
     //Insert data into JList History
     private void insertCustomerHistory() throws SQLException {

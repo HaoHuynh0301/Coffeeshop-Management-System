@@ -135,7 +135,7 @@
               </grid>
             </constraints>
             <properties>
-              <font name="JetBrains Mono" size="26"/>
+              <font name="JetBrains Mono" size="28"/>
               <text value=""/>
             </properties>
           </component>
