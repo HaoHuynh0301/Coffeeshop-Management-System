@@ -43,8 +43,11 @@ public class Screen extends JFrame{
     private JPanel pannel_login;
     private JButton btn_Logout_2;
     private JButton btn_admin;
-    private JButton button1;
-    private JButton button2;
+    private JButton btn_reduce_product;
+    private JButton btn_add_product;
+    private JLabel txt_Text_Quantity;
+    private JLabel txt_Text_edit_product_list;
+    private JScrollPane pannel_listhistory;
     private JButton btn_Submit;
     JButton button = new JButton();
 
@@ -64,6 +67,9 @@ public class Screen extends JFrame{
 
     //Flag for Order Button
     private boolean FLAG_order=true;
+
+    //Flag for Edit Product List
+    private boolean Change_Code;
 
     //Flag for button Sign up
     private boolean FLAG=true;
@@ -104,6 +110,7 @@ public class Screen extends JFrame{
         btn_addtoFavorite.setVisible(false);
         btn_edit.setVisible(true);
         btn_Logout_2.setVisible(false);
+        txt_Text_edit_product_list.setVisible(false);
 
         //Setup for JoptionPane
 
@@ -145,6 +152,24 @@ public class Screen extends JFrame{
             }
         });
 
+        //Button Add Product Event
+        btn_add_product.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Change_Code=true;
+                ChangeListProduct(Change_Code);
+            }
+        });
+
+        //Button Reduce Product Event
+        btn_reduce_product.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Change_Code=false;
+                ChangeListProduct(Change_Code);
+            }
+        });
+
         //Button Admin Event
         btn_admin.addActionListener(new ActionListener() {
             @Override
@@ -159,7 +184,11 @@ public class Screen extends JFrame{
                     ResultSet rs=stmt.executeQuery();
                     if(rs.next()) {
                         System.out.println("Done");
-
+                        pannel_login.setVisible(false);
+                        txt_Text_Quantity.setVisible(false);
+                        btn_Order.setVisible(false);
+                        txt_Text_edit_product_list.setVisible(true);
+                        pannel_listhistory.setVisible(false);
                         //asign Customer ID
                         Customer_ID=rs.getString("customer_id");
 
@@ -572,6 +601,10 @@ public class Screen extends JFrame{
                 int temp_history_item=list_History.getSelectedIndex();
             }
         });
+    }
+
+    private void ChangeListProduct(boolean change_Code) {
+
     }
 
     //Insert data into JList History
