@@ -51,4 +51,10 @@ public class Functions  implements Serializable{
         }
         return arr_data;
     }
+
+    public void maximum_point(int limit_point, int recent_point, Connection conn, JPanel pannel_main) {
+        if(recent_point==limit_point) {
+            JOptionPane.showMessageDialog(pannel_main, "You recieve 1 discount code: B10");
+        }
+    }
 }

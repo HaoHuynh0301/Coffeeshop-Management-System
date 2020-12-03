@@ -125,6 +125,7 @@
         </constraints>
         <properties>
           <background color="-3420720"/>
+          <foreground color="-5513999"/>
         </properties>
         <border type="none"/>
         <children>
@@ -224,7 +225,9 @@
               </grid>
             </constraints>
             <properties>
+              <background color="-9657916"/>
               <font name=".AppleSystemUIFontMonospaced" size="36"/>
+              <foreground color="-9657916"/>
               <hideActionText value="true"/>
               <text value="Find"/>
             </properties>

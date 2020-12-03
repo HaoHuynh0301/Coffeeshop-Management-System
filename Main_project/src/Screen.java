@@ -48,6 +48,11 @@ public class Screen extends JFrame{
     JButton button = new JButton();
     private Functions function=new Functions();
 
+    //Customer's Point
+    private int CUSTOMER_POINT;
+
+    //Limit Point
+    private int MAX_POINT=10;
 
     //Get now date
     long millis=System.currentTimeMillis();
@@ -117,6 +122,7 @@ public class Screen extends JFrame{
         txt_Text_edit_product_list.setVisible(false);
         btn_add_product.setVisible(false);
         btn_reduce_product.setVisible(false);
+        list_product.setVisible(false);
 
         //Setup for insert into comboBox sort
         model_comboBox_sort=new DefaultListModel<>();
@@ -385,7 +391,7 @@ public class Screen extends JFrame{
                 btn_edit.setVisible(true);
                 model_comboBox.clear();
                 model_list_history.clear();
-                model.clear();
+                list_product.setVisible(false);
                 model_comboBox.clear();
                 pannel_login.setVisible(true);
                 btn_add_product.setVisible(false);
@@ -408,6 +414,7 @@ public class Screen extends JFrame{
                 btn_signup.setVisible(false);
                 btn_edit.setVisible(true);
                 btn_Logout_2.setVisible(true);
+                list_product.setVisible(true);
                 String temp_email=txt_email_input.getText();
                 String temp_pass=txt_pass_input.getText().toString();
                 try {
@@ -431,8 +438,16 @@ public class Screen extends JFrame{
                         }
                         list_product.setModel(model);
 
-                        //Insert History of Customer into JList
+                        PreparedStatement stmt_point=(PreparedStatement) conn.prepareStatement("UPDATE Customer SET point=? WHERE customer_id=?");
+                        int POINT_PLUS=CUSTOMER_POINT+1;
+                        stmt_point.setInt(1, POINT_PLUS);
+                        stmt_point.setString(2, Customer_ID);
+                        int result_point=stmt_point.executeUpdate();
+                        if(result_point!=-1) {
+                            System.out.println("Done");
+                        }
 
+                        //Insert History of Customer into JList
                         insertCustomerHistory();
 
                         //Insert payment method into ComboBox
@@ -523,6 +538,7 @@ public class Screen extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(FLAG_order==true) {
+                    function.maximum_point(MAX_POINT, CUSTOMER_POINT, conn, pannel_main);
                     var eval=txt_Quantity.getText().toString();
                     var dis_code_temp=txt_discount_code.getText();
                     double temp_product_price;
@@ -585,16 +601,21 @@ public class Screen extends JFrame{
                         mysql_order.setString(4, txt_Comment.getText());
                         boolean rs=mysql_order.execute();
 
+                        //increase point for Customer Ordering
+                        PreparedStatement stmt_point= (PreparedStatement) conn.prepareStatement("UPDATE Customer SET point");
+
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
-                        btn_Order.setVisible(false);
-                        list_product.setSelectedIndex(-1);
-                        list_product.ensureIndexIsVisible(-1);
+                        btn_Order.setVisible(true);
+//                        list_product.setSelectedIndex(-1);
+//                        list_product.ensureIndexIsVisible(-1);
+//                        list_product.clearSelection();
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
                 }
                 else {
+                    function.maximum_point(MAX_POINT, CUSTOMER_POINT, conn, pannel_main);
                     var eval=txt_Quantity.getText();
                     btn_Order.setText("Order");
                     FLAG_order=true;
@@ -643,10 +664,12 @@ public class Screen extends JFrame{
                         btn_Order.setVisible(false);
                         list_product.setSelectedIndex(-1);
                         list_product.ensureIndexIsVisible(-1);
+                        list_product.clearSelection();
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
                 }
+                arr_Products=new ArrayList<>();
                 list_History.setModel(model_list_history);
             }
         });
