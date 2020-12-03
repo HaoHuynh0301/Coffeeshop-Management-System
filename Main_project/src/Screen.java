@@ -33,7 +33,6 @@ public class Screen extends JFrame{
     private Icon icon = new ImageIcon("/Users/macos/Documents/Java Project/Data/Images/searchinglogo.png");
     private JTextField txt_find;
     private JButton btn_Find=new JButton(icon);
-    private JButton btn_addtoFavorite;
     private JButton btn_edit;
     private JPanel pannel_login;
     private JButton btn_Logout_2;
@@ -44,6 +43,7 @@ public class Screen extends JFrame{
     private JLabel txt_Text_edit_product_list;
     private JScrollPane pannel_listhistory;
     private JComboBox comboBox_sort;
+    private JButton btn_addtofavorite;
     private JButton btn_Submit;
     JButton button = new JButton();
     private Functions function=new Functions();
@@ -58,6 +58,9 @@ public class Screen extends JFrame{
 
     //Customer_ID
     private static String Customer_ID;
+
+    //Flag for sort
+    private boolean FLAG_sort=true;
 
     //Flag for Edit Button
     private boolean FLAG_edit=true;
@@ -87,6 +90,7 @@ public class Screen extends JFrame{
     private static Custumer_order customer_history;
 
     //Components for Jlist Products
+    DefaultListModel<String> model_temp;
     DefaultListModel<String> model;
     private static ArrayList<Product> arr_Products;
 
@@ -107,7 +111,7 @@ public class Screen extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         btn_Back.setVisible(false);
-        btn_addtoFavorite.setVisible(false);
+        btn_addtofavorite.setVisible(false);
         btn_edit.setVisible(true);
         btn_Logout_2.setVisible(false);
         txt_Text_edit_product_list.setVisible(false);
@@ -135,6 +139,7 @@ public class Screen extends JFrame{
         customer_history=null;
 
         //Setup for inserting emelents into Jlist
+        model_temp=new DefaultListModel<>();
         model = new DefaultListModel<>();
         arr_Products=new ArrayList<>();
 
@@ -235,6 +240,7 @@ public class Screen extends JFrame{
                         btn_add_product.setVisible(true);
                         btn_reduce_product.setVisible(true);
                         btn_Logout_2.setVisible(true);
+                        combobox_Method.setVisible(false);
                         //asign Customer ID
                         Customer_ID=rs.getString("customer_id");
 
@@ -265,10 +271,28 @@ public class Screen extends JFrame{
         });
 
         //Button Add To Favorite
-        btn_addtoFavorite.addActionListener(new ActionListener() {
+        btn_addtofavorite.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                var index=list_product.getSelectedIndex();
+                var temp_product_id=arr_Products.get(index).getProduct_id();
+                PreparedStatement stmt=null;
+                var mysql="update Customer set favorite_product_id=? where customer_id=?";
+                try {
+                    stmt=(PreparedStatement) conn.prepareStatement(mysql);
+                    stmt.setString(1, temp_product_id);
+                    stmt.setString(2, Customer_ID);
+                    int rs=stmt.executeUpdate();
+                    if(rs!=-1) {
+                        JOptionPane.showMessageDialog(pannel_main, "Succeed");
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(pannel_main, "Error");
+                    }
 
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
 
@@ -369,6 +393,8 @@ public class Screen extends JFrame{
                 txt_Text_edit_product_list.setVisible(false);
                 btn_Logout_2.setVisible(false);
                 pannel_listhistory.setVisible(true);
+                combobox_Method.setVisible(true);
+                btn_addtofavorite.setVisible(false);
                 JOptionPane.showMessageDialog(pannel_main, "Logout Succeed!!!");
             }
         });
@@ -431,11 +457,20 @@ public class Screen extends JFrame{
                 if (event.getStateChange() == ItemEvent.SELECTED) {
                     Object item = event.getItem();
                     Sort_Type_Code=comboBox_sort.getSelectedIndex();
+                    if(Sort_Type_Code==2) {
+                        FLAG_sort=false;
+                    }
+                    if(FLAG_sort==false) {
+                        btn_add_product.setVisible(false);
+                    }
+                    list_product.setSelectedIndex(-1);
+                    list_product.ensureIndexIsVisible(-1);
                     model.clear();
-                    for(Product p : function.Sort(Sort_Type_Code, arr_Products)) {
+                    for(Product p : function.Sort(Sort_Type_Code, arr_Products, Customer_ID, conn, model, model_temp)) {
                         model.addElement(p.getProduct_id());
                     }
                     list_product.setModel(model);
+                    FLAG=true;
                 }
             }
         }
@@ -461,7 +496,7 @@ public class Screen extends JFrame{
                         var temp_new_email = txt_email_input.getText();
                         var temp_password = txt_pass_input.getText();
                         try {
-                            PreparedStatement mysql_order = (PreparedStatement) conn.prepareStatement("insert into Customer values (?, ?, ?)");
+                            PreparedStatement mysql_order = (PreparedStatement) conn.prepareStatement("insert into Customer(customer_id, email_login, password_login)    values (?, ?, ?)");
                             mysql_order.setString(1, temp_customer_id.toString());
                             mysql_order.setString(2, temp_new_email);
                             mysql_order.setString(3, temp_new_email.toString());
@@ -612,19 +647,9 @@ public class Screen extends JFrame{
                         throwables.printStackTrace();
                     }
                 }
-
+                list_History.setModel(model_list_history);
             }
         });
-
-        //Event when select JComboBox Sort
-//        comboBox_sort.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                JOptionPane.showMessageDialog(pannel_main, "wevefvre");
-//            }
-//        });
-
-
 
         //Event when select Jlist history
         list_History.addListSelectionListener(new ListSelectionListener() {
@@ -665,7 +690,7 @@ public class Screen extends JFrame{
         list_product.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                btn_addtoFavorite.setVisible(true);
+                btn_addtofavorite.setVisible(true);
                 int temp_order_id=list_product.getSelectedIndex();
                 var price=arr_Products.get(temp_order_id).getProduct_price();
                 txt_product_price.setText(""+price);
@@ -721,8 +746,8 @@ public class Screen extends JFrame{
     private void insertSort() throws SQLException{
         arr_sort_code.add("Price: increase");
         arr_sort_code.add("Price: Decrease");
+        arr_sort_code.add("Favorite");
         arr_sort_code.add("New");
-        arr_sort_code.add("Popular");
         for(String s : arr_sort_code) {
             comboBox_sort.addItem(s);
         }
