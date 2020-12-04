@@ -238,6 +238,7 @@ public class Screen extends JFrame{
                     ResultSet rs=stmt.executeQuery();
                     if(rs.next()) {
                         System.out.println("Done");
+                        list_product.setVisible(true);
                         pannel_login.setVisible(false);
                         txt_Text_Quantity.setVisible(false);
                         btn_Order.setVisible(false);
@@ -390,9 +391,8 @@ public class Screen extends JFrame{
                 btn_signup.setVisible(true);
                 btn_edit.setVisible(true);
                 model_comboBox.clear();
-                model_list_history.clear();
+                list_History.setVisible(false);
                 list_product.setVisible(false);
-                model_comboBox.clear();
                 pannel_login.setVisible(true);
                 btn_add_product.setVisible(false);
                 btn_reduce_product.setVisible(false);
@@ -415,6 +415,7 @@ public class Screen extends JFrame{
                 btn_edit.setVisible(true);
                 btn_Logout_2.setVisible(true);
                 list_product.setVisible(true);
+                list_History.setVisible(true);
                 String temp_email=txt_email_input.getText();
                 String temp_pass=txt_pass_input.getText().toString();
                 try {
@@ -478,8 +479,6 @@ public class Screen extends JFrame{
                     if(FLAG_sort==false) {
                         btn_add_product.setVisible(false);
                     }
-                    list_product.setSelectedIndex(-1);
-                    list_product.ensureIndexIsVisible(-1);
                     model.clear();
                     for(Product p : function.Sort(Sort_Type_Code, arr_Products, Customer_ID, conn, model, model_temp)) {
                         model.addElement(p.getProduct_id());
@@ -732,6 +731,7 @@ public class Screen extends JFrame{
 
     //Insert data into JList History
     private void insertCustomerHistory() throws SQLException {
+        model_list_history=new DefaultListModel<>();
         PreparedStatement stmt= null;
         try {
             stmt = (PreparedStatement) conn.prepareStatement("Select * from Custumer_order where customer_id=?");
