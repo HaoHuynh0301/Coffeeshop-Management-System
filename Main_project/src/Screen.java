@@ -390,7 +390,9 @@ public class Screen extends JFrame{
                 btn_Back.setVisible(false);
                 btn_signup.setVisible(true);
                 btn_edit.setVisible(true);
+                model_comboBox_sort.clear();
                 model_comboBox.clear();
+                model.clear();
                 list_History.setVisible(false);
                 list_product.setVisible(false);
                 pannel_login.setVisible(true);
@@ -712,11 +714,13 @@ public class Screen extends JFrame{
         list_product.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                btn_addtofavorite.setVisible(true);
-                int temp_order_id=list_product.getSelectedIndex();
-                var price=arr_Products.get(temp_order_id).getProduct_price();
-                txt_product_price.setText(""+price);
-                btn_Order.setVisible(true);
+                if(!model.isEmpty()) {
+                    btn_addtofavorite.setVisible(true);
+                    int temp_order_id=list_product.getSelectedIndex();
+                    var price=arr_Products.get(temp_order_id).getProduct_price();
+                    txt_product_price.setText(""+price);
+                    btn_Order.setVisible(true);
+                }
             }
         });
 
