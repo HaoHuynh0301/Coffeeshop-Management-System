@@ -32,7 +32,6 @@ public class Screen extends JFrame{
     private JTextField txt_discount_code;
     private Icon icon = new ImageIcon("/Users/macos/Documents/Java Project/Data/Images/searchinglogo.png");
     private JTextField txt_find;
-    private JButton btn_Find=new JButton(icon);
     private JButton btn_edit;
     private JPanel pannel_login;
     private JButton btn_Logout_2;
@@ -44,6 +43,7 @@ public class Screen extends JFrame{
     private JScrollPane pannel_listhistory;
     private JComboBox comboBox_sort;
     private JButton btn_addtofavorite;
+    private JButton btn_Find;
     private JButton btn_Submit;
     JButton button = new JButton();
     private Functions function=new Functions();
@@ -73,19 +73,14 @@ public class Screen extends JFrame{
     //Flag for Order Button
     private boolean FLAG_order=true;
 
-    //Flag for Edit Product List
-    private static int Change_Code=1;
-
     //Flag for button Sign up
     private boolean FLAG=true;
 
     //Components for ComboBox_sort
-    DefaultListModel<String> model_comboBox_sort;
     ArrayList<String> arr_sort_code;
     int Sort_Type_Code=0;
 
     //Components for ComboBox_payment_method
-    DefaultListModel<String> model_comboBox;
     static ArrayList<Customer_payment_method> arr_method;
     private static Customer_payment_method method;
 
@@ -107,7 +102,6 @@ public class Screen extends JFrame{
     //Components for Customer Order
     private static Customer_order_products COP;
 
-
     private static Connection conn;
 
     public Screen() {
@@ -125,11 +119,9 @@ public class Screen extends JFrame{
         list_product.setVisible(false);
 
         //Setup for insert into comboBox sort
-        model_comboBox_sort=new DefaultListModel<>();
         arr_sort_code=new ArrayList<>();
 
         //Setup for insert into ComboBox Method
-        model_comboBox=new DefaultListModel<>();
         arr_method=new ArrayList<>();
         method=null;
 
@@ -379,7 +371,7 @@ public class Screen extends JFrame{
         });
 
         //Button Logout Event
-        btn_Logout_2.addActionListener(new AbstractAction() {
+        btn_Logout_2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 txt_email_input.setText("");
@@ -390,8 +382,8 @@ public class Screen extends JFrame{
                 btn_Back.setVisible(false);
                 btn_signup.setVisible(true);
                 btn_edit.setVisible(true);
-                model_comboBox_sort.clear();
-                model_comboBox.clear();
+                comboBox_sort.removeAllItems();
+                combobox_Method.removeAllItems();
                 model.clear();
                 list_History.setVisible(false);
                 list_product.setVisible(false);
@@ -608,9 +600,6 @@ public class Screen extends JFrame{
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
                         btn_Order.setVisible(true);
-//                        list_product.setSelectedIndex(-1);
-//                        list_product.ensureIndexIsVisible(-1);
-//                        list_product.clearSelection();
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
@@ -663,9 +652,6 @@ public class Screen extends JFrame{
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
                         btn_Order.setVisible(false);
-                        list_product.setSelectedIndex(-1);
-                        list_product.ensureIndexIsVisible(-1);
-                        list_product.clearSelection();
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
@@ -770,7 +756,8 @@ public class Screen extends JFrame{
     }
 
     //Insert data into JComboBox Sort
-    private void insertSort() throws SQLException{
+    private void insertSort(){
+        arr_sort_code.clear();
         arr_sort_code.add("Price: increase");
         arr_sort_code.add("Price: Decrease");
         arr_sort_code.add("Favorite");
@@ -856,7 +843,6 @@ public class Screen extends JFrame{
         screen.pack();
         screen.setVisible(true);
         connectData();
-        BigInteger number = generateMyBigNumber(200);
     }
 }
 

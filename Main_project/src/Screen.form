@@ -218,20 +218,6 @@
               <font name=".AppleSystemUIFontMonospaced" size="26"/>
             </properties>
           </component>
-          <component id="67059" class="javax.swing.JButton" binding="btn_Find">
-            <constraints>
-              <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="50"/>
-              </grid>
-            </constraints>
-            <properties>
-              <background color="-9657916"/>
-              <font name=".AppleSystemUIFontMonospaced" size="36"/>
-              <foreground color="-9657916"/>
-              <hideActionText value="true"/>
-              <text value="Find"/>
-            </properties>
-          </component>
           <component id="288be" class="javax.swing.JButton" binding="btn_reduce_product">
             <constraints>
               <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -285,6 +271,17 @@
             <properties>
               <font size="22"/>
               <text value="Add to Favorite"/>
+            </properties>
+          </component>
+          <component id="c2913" class="javax.swing.JButton" binding="btn_Find">
+            <constraints>
+              <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="-1" height="70"/>
+              </grid>
+            </constraints>
+            <properties>
+              <font size="22"/>
+              <text value="Find"/>
             </properties>
           </component>
         </children>
