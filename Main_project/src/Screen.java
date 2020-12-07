@@ -52,7 +52,7 @@ public class Screen extends JFrame{
     private int CUSTOMER_POINT;
 
     //Limit Point
-    private int MAX_POINT=10;
+    private int MAX_POINT=4;
 
     //Get now date
     long millis=System.currentTimeMillis();
@@ -152,8 +152,13 @@ public class Screen extends JFrame{
         btn_Back.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                txt_change_email_login.setText("");
-                txt_password_change_login.setText("");
+                txt_change_email_login.setText("Email");
+                txt_password_change_login.setText("Password");
+                txt_email_input.setText("");
+                txt_pass_input.setText("");
+                btn_admin.setVisible(true);
+                btn_signup.setVisible(true);
+                btn_edit.setVisible(true);
                 btnLogin.setVisible(true);
                 btn_Back.setVisible(false);
             }
@@ -323,17 +328,22 @@ public class Screen extends JFrame{
                             JOptionPane.showMessageDialog(pannel_main, "Invalid Email");
                         }
                         else {
-                            var temp_newpassword=txt_pass_input.getText();
-                            PreparedStatement stmt_change_pass = (PreparedStatement) conn.prepareStatement("update Customer set password_login=? where email_login=?");
-                            stmt_change_pass.setString(1, temp_newpassword);
-                            stmt_change_pass.setString(2, temp_email_confirm);
-                            boolean rs_change_password = stmt_change_pass.execute();
-                            JOptionPane.showMessageDialog(pannel_main, "Change Password Succeed!!!");
-                            btn_edit.setVisible(false);
-                            btnLogin.setVisible(true);
-                            btn_signup.setVisible(true);
-                            txt_pass_input.setText("");
-                            txt_password_change_login.setText("Password");
+                            var temp_newpassword=txt_pass_input.getText().toString();
+                            if(temp_newpassword.isEmpty()) {
+                                JOptionPane.showMessageDialog(pannel_main, "Please input new password!!!");
+                            }
+                            else {
+                                PreparedStatement stmt_change_pass = (PreparedStatement) conn.prepareStatement("update Customer set password_login=? where email_login=?");
+                                stmt_change_pass.setString(1, temp_newpassword);
+                                stmt_change_pass.setString(2, temp_email_confirm);
+                                boolean rs_change_password = stmt_change_pass.execute();
+                                JOptionPane.showMessageDialog(pannel_main, "Change Password Succeed!!!");
+                                btn_edit.setVisible(false);
+                                btnLogin.setVisible(true);
+                                btn_signup.setVisible(true);
+                                txt_pass_input.setText("");
+                                txt_password_change_login.setText("Password");
+                            }
                         }
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
@@ -382,6 +392,7 @@ public class Screen extends JFrame{
                 btn_Back.setVisible(false);
                 btn_signup.setVisible(true);
                 btn_edit.setVisible(true);
+                model_list_history.clear();
                 comboBox_sort.removeAllItems();
                 combobox_Method.removeAllItems();
                 model.clear();
@@ -427,20 +438,13 @@ public class Screen extends JFrame{
 
                         txt_pass_input.setText("");
 
+                        CUSTOMER_POINT=rs.getInt("point");
+
                         //Insert data into JList
                         for(Product product : arr_Products) {
                             model.addElement(product.getProduct_id());
                         }
                         list_product.setModel(model);
-
-                        PreparedStatement stmt_point=(PreparedStatement) conn.prepareStatement("UPDATE Customer SET point=? WHERE customer_id=?");
-                        int POINT_PLUS=CUSTOMER_POINT+1;
-                        stmt_point.setInt(1, POINT_PLUS);
-                        stmt_point.setString(2, Customer_ID);
-                        int result_point=stmt_point.executeUpdate();
-                        if(result_point!=-1) {
-                            System.out.println("Done");
-                        }
 
                         //Insert History of Customer into JList
                         insertCustomerHistory();
@@ -493,6 +497,8 @@ public class Screen extends JFrame{
                 if (FLAG == true) {
                     FLAG = false;
                     btnLogin.setVisible(false);
+                    btn_edit.setVisible(false);
+                    btn_admin.setVisible(false);
                     txt_email_input.setText("");
                     txt_pass_input.setText("");
                     txt_change_email_login.setText("Input your email: ");
@@ -507,11 +513,13 @@ public class Screen extends JFrame{
                             PreparedStatement mysql_order = (PreparedStatement) conn.prepareStatement("insert into Customer(customer_id, email_login, password_login)    values (?, ?, ?)");
                             mysql_order.setString(1, temp_customer_id.toString());
                             mysql_order.setString(2, temp_new_email);
-                            mysql_order.setString(3, temp_new_email.toString());
+                            mysql_order.setString(3, temp_password.toString());
                             boolean rs = mysql_order.execute();
                                 txt_change_email_login.setText("Email: ");
                                 txt_password_change_login.setText("Password");
                                 btnLogin.setVisible(true);
+                                btn_edit.setVisible(true);
+                                btn_admin.setVisible(true);
                                 txt_pass_input.setText("");
                                 txt_email_input.setText("");
                                 JOptionPane.showMessageDialog(pannel_main, "Sign Up Succeed!!!");
@@ -533,6 +541,9 @@ public class Screen extends JFrame{
                 if(FLAG_order==true) {
                     function.maximum_point(MAX_POINT, CUSTOMER_POINT, conn, pannel_main);
                     var eval=txt_Quantity.getText().toString();
+                    if(eval.isEmpty()) {
+                        eval="1";
+                    }
                     var dis_code_temp=txt_discount_code.getText();
                     double temp_product_price;
                     int discount_value;
@@ -542,6 +553,26 @@ public class Screen extends JFrame{
                         stmt_dis = (PreparedStatement) conn.prepareStatement("Select * from Discount_Code where code=?");
                         stmt_dis.setString(1, dis_code_temp);
                         ResultSet rs_discount=stmt_dis.executeQuery();
+
+                        PreparedStatement stmt_point=(PreparedStatement) conn.prepareStatement("UPDATE Customer SET point=? WHERE customer_id=?");
+                        int POINT_PLUS=CUSTOMER_POINT+1;
+                        stmt_point.setInt(1, POINT_PLUS);
+                        stmt_point.setString(2, Customer_ID);
+                        int result_point=stmt_point.executeUpdate();
+
+                        if(result_point!=-1) {
+                            if(POINT_PLUS==MAX_POINT) {
+                                JOptionPane.showMessageDialog(pannel_main, "You recieve 1 discount code: BN01");
+                                PreparedStatement stmt_point_reset=(PreparedStatement) conn.prepareStatement("UPDATE Customer SET point=? WHERE customer_id=?");
+                                stmt_point.setInt(1, 0);
+                                stmt_point.setString(2, Customer_ID);
+                                int result_point_reset=stmt_point.executeUpdate();
+                                if(result_point_reset!=-1) {
+                                    System.out.println("Done");
+                                }
+                            }
+                        }
+
                         if(rs_discount.next()) {
                             var discount_type_code=rs_discount.getInt("discount_type");
                             if(discount_type_code==1) {
@@ -553,6 +584,9 @@ public class Screen extends JFrame{
                                 txt_product_price.setText(""+(base_product_price*(1.0*discount_value/100)));
                             }
                         }
+                        else {
+                            JOptionPane.showMessageDialog(pannel_main, "Invalid Discount Code!");
+                        }
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
@@ -561,13 +595,7 @@ public class Screen extends JFrame{
                     FLAG_order=false;
                     int temp_quantity;
                     FLAG_order=false;
-                    if(eval=="") {
-                        JOptionPane.showMessageDialog(pannel_main, "Error");
-                        temp_quantity=1;
-                    }
-                    else {
-                        temp_quantity=Integer.parseInt(txt_Quantity.getText().toString());
-                    }
+                        temp_quantity=Integer.parseInt(eval);
 
                     int temp_method_code=combobox_Method.getSelectedIndex();
                     try {
@@ -599,7 +627,6 @@ public class Screen extends JFrame{
 
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
-                        btn_Order.setVisible(true);
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
@@ -607,15 +634,13 @@ public class Screen extends JFrame{
                 else {
                     function.maximum_point(MAX_POINT, CUSTOMER_POINT, conn, pannel_main);
                     var eval=txt_Quantity.getText();
+                    if(eval.isEmpty()) {
+                        eval="1";
+                    }
                     btn_Order.setText("Order");
                     FLAG_order=true;
                     int temp_quantity;
-                    if(eval==null) {
-                        temp_quantity=1;
-                    }
-                    else {
-                        temp_quantity=Integer.parseInt(txt_Quantity.getText().toString());
-                    }
+                        temp_quantity=Integer.parseInt(eval);
 
                     int temp_method_code=combobox_Method.getSelectedIndex();
                     try {
@@ -651,13 +676,12 @@ public class Screen extends JFrame{
 
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
-                        btn_Order.setVisible(false);
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
                 }
-                arr_Products=new ArrayList<>();
-                list_History.setModel(model_list_history);
+    //                arr_Products=new ArrayList<>();
+    //                list_History.setModel(model_list_history);
             }
         });
 
@@ -665,33 +689,35 @@ public class Screen extends JFrame{
         list_History.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                FLAG_order=false;
-                int temp_history_selection=list_History.getSelectedIndex();
-                var temp_order_id=arr_history.get(temp_history_selection).getOrder_id();
-                ORDER_ID=temp_order_id;
-                btn_Order.setText("Re-Order");
+                if (!model_list_history.isEmpty()) {
+                    FLAG_order=false;
+                    int temp_history_selection=list_History.getSelectedIndex();
+                    var temp_order_id=arr_history.get(temp_history_selection).getOrder_id();
+                    ORDER_ID=temp_order_id;
+                    btn_Order.setText("Re-Order");
 
-                PreparedStatement stmt= null;
-                try {
-                    stmt = (PreparedStatement) conn.prepareStatement("Select * from customer_order_products where order_id=?");
-                    stmt.setString(1, temp_order_id);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-                try {
-                    ResultSet rs=stmt.executeQuery();
-                    if(rs.next()) {
-                        txt_Comment.setText(rs.getString("comment"));
-                        txt_Quantity.setText(String.valueOf(rs.getInt("quantity")));
-                        PreparedStatement stmt_2= (PreparedStatement) conn.prepareStatement("Select * from product where product_id=?");
-                        stmt_2.setString(1, rs.getString("product_id"));
-                        ResultSet rs_2=stmt_2.executeQuery();
-                        if(rs_2.next()) {
-                            txt_product_price.setText(String.valueOf(rs_2.getInt("product_price")));
-                        }
+                    PreparedStatement stmt= null;
+                    try {
+                        stmt = (PreparedStatement) conn.prepareStatement("Select * from customer_order_products where order_id=?");
+                        stmt.setString(1, temp_order_id);
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
                     }
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+                    try {
+                        ResultSet rs=stmt.executeQuery();
+                        if(rs.next()) {
+                            txt_Comment.setText(rs.getString("comment"));
+                            txt_Quantity.setText(String.valueOf(rs.getInt("quantity")));
+                            PreparedStatement stmt_2= (PreparedStatement) conn.prepareStatement("Select * from product where product_id=?");
+                            stmt_2.setString(1, rs.getString("product_id"));
+                            ResultSet rs_2=stmt_2.executeQuery();
+                            if(rs_2.next()) {
+                                txt_product_price.setText(String.valueOf(rs_2.getInt("product_price")));
+                            }
+                        }
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
                 }
             }
         });

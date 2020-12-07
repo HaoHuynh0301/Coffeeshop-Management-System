@@ -1,10 +1,16 @@
+use project;
+
 insert into Discount_Code values ("X01", 1, null, 20, "Pepsi");
 insert into Discount_Code values ("T12", 2, 20, null, "Cocacola");
-insert into Discount_Code values ("B10", 1, null,  "20", "Admin");
+insert into Discount_Code values ("B10", 1, null,  20, "Admin");
+insert into Discount_Code values ("BN01", 1, null, 20, "Bonus");
+
 insert into Customer(customer_id, email_login, password_login, point) values ("01", "root", "root", 0);
+
 insert into customer_payment_method values ("P01", "CAST");
 insert into customer_payment_method values ("P02", "CARD");
 insert into customer_payment_method values ("P03", "MOMO");
+
 insert into product values ("DenDa", "A1", 20);
 insert into product values ("DenSuaDa", "A1", "24");
 insert into product values ("DenSuaDaSpecial", "A1", "28");

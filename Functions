@@ -1,15 +1,15 @@
-1) Login
-2) Logout
-3) Log in as admin
-4) Sign up
-5) Edit information 
-6) Sort type of list's products
-7) Add new product (admin mode)
-8) Delete product (admin mode)
-9) Edit information of available product
-10) Order (Customer mode)
-11) Pre-order base on order history (Customer mode)
-12) Search product
-13) See history order
-14) Use discount code
-15) Bonus Point 
+1) Login - Done
+2) Logout - Done
+3) Log in as admin - Done
+4) Sign up - Done
+5) Edit information - Done
+6) Sort type of list's products - Done
+7) Add new product (admin mode) - Done
+8) Delete product (admin mode) - Done
+9) Edit information of available product - Error
+10) Order (Customer mode) - Done
+11) Pre-order base on order history (Customer mode) - Done
+12) Search product - Done
+13) See history order - Done
+14) Use discount code - Not Succeed
+15) Bonus Point - Done
