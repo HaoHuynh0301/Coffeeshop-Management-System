@@ -44,6 +44,7 @@ public class Screen extends JFrame{
     private JComboBox comboBox_sort;
     private JButton btn_addtofavorite;
     private JButton btn_Find;
+    private JButton btn_text;
     private JButton btn_Submit;
     JButton button = new JButton();
     private Functions function=new Functions();
@@ -52,7 +53,7 @@ public class Screen extends JFrame{
     private int CUSTOMER_POINT;
 
     //Limit Point
-    private int MAX_POINT=4;
+    private int MAX_POINT=10;
 
     //Get now date
     long millis=System.currentTimeMillis();
