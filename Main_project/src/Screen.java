@@ -44,6 +44,9 @@ public class Screen extends JFrame{
     private JComboBox comboBox_sort;
     private JButton btn_addtofavorite;
     private JButton btn_Find;
+    private JButton btn_admin_edit;
+    private JScrollPane pannel_croll_method;
+    private JLabel txt_text_change_dis_rename;
     private JButton btn_text;
     private JButton btn_Submit;
     JButton button = new JButton();
@@ -106,10 +109,13 @@ public class Screen extends JFrame{
     private static Connection conn;
 
     public Screen() {
-        super("Login");
+        super("CoffeeShop Management");
         this.setContentPane(this.pannel_main);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
+
+        //Declare
+        btn_admin_edit.setVisible(false);
         btn_Back.setVisible(false);
         btn_addtofavorite.setVisible(false);
         btn_edit.setVisible(true);
@@ -222,6 +228,26 @@ public class Screen extends JFrame{
             }
         });
 
+        //Button admin edit event
+        btn_admin_edit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    PreparedStatement stmt=(PreparedStatement) conn.prepareStatement("Call edit_product_infor(?, ?, ?)");
+                    stmt.setString(1, arr_Products.get(list_product.getSelectedIndex()).getProduct_id());
+                    stmt.setInt(2, Integer.parseInt(txt_product_price.getText()));
+                    stmt.setString(3, txt_Quantity.getText().toString());
+                    int rs=stmt.executeUpdate();
+                    if(rs!=-1) {
+                        JOptionPane.showMessageDialog(pannel_main, "Done");
+                    }
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        });
+
         //Button Admin Event
         btn_admin.addActionListener(new ActionListener() {
             @Override
@@ -236,6 +262,7 @@ public class Screen extends JFrame{
                     ResultSet rs=stmt.executeQuery();
                     if(rs.next()) {
                         System.out.println("Done");
+                        txt_text_change_dis_rename.setText("Rename");
                         list_product.setVisible(true);
                         pannel_login.setVisible(false);
                         txt_Text_Quantity.setVisible(false);
@@ -246,6 +273,8 @@ public class Screen extends JFrame{
                         btn_reduce_product.setVisible(true);
                         btn_Logout_2.setVisible(true);
                         combobox_Method.setVisible(false);
+                        btn_admin_edit.setVisible(true);
+                        txt_Text_Quantity.setVisible(false);
                         //asign Customer ID
                         Customer_ID=rs.getString("customer_id");
 
@@ -389,6 +418,7 @@ public class Screen extends JFrame{
                 txt_pass_input.setText("");
                 txt_Quantity.setText("");
                 txt_Comment.setText("");
+                txt_text_change_dis_rename.setText("Discount");
                 btnLogin.setVisible(true);
                 btn_Back.setVisible(false);
                 btn_signup.setVisible(true);
@@ -422,6 +452,8 @@ public class Screen extends JFrame{
                 btn_Logout_2.setVisible(true);
                 list_product.setVisible(true);
                 list_History.setVisible(true);
+                btn_Order.setVisible(true);
+                btn_addtofavorite.setVisible(true);
                 String temp_email=txt_email_input.getText();
                 String temp_pass=txt_pass_input.getText().toString();
                 try {
@@ -534,7 +566,6 @@ public class Screen extends JFrame{
             }
         });
 
-
         //Button Order Event
         btn_Order.addActionListener(new AbstractAction() {
             @Override
@@ -593,9 +624,7 @@ public class Screen extends JFrame{
                     }
 
                     btn_Order.setText("Order");
-                    FLAG_order=false;
                     int temp_quantity;
-                    FLAG_order=false;
                         temp_quantity=Integer.parseInt(eval);
 
                     int temp_method_code=combobox_Method.getSelectedIndex();
@@ -681,8 +710,6 @@ public class Screen extends JFrame{
                         throwables.printStackTrace();
                     }
                 }
-    //                arr_Products=new ArrayList<>();
-    //                list_History.setModel(model_list_history);
             }
         });
 
@@ -728,11 +755,9 @@ public class Screen extends JFrame{
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if(!model.isEmpty()) {
-                    btn_addtofavorite.setVisible(true);
                     int temp_order_id=list_product.getSelectedIndex();
                     var price=arr_Products.get(temp_order_id).getProduct_price();
                     txt_product_price.setText(""+price);
-                    btn_Order.setVisible(true);
                 }
             }
         });
