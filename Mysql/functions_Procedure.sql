@@ -1,22 +1,17 @@
 use project;
+
+-- Procedure Reduce (Admin Mode)
 delimiter $$
-create procedure text(in temp int)
+create procedure reduce_product(in pro_id varchar(20))
 begin
-select * from product;
-end;
+	delete from product where product.product_id=pro_id;
+end; 
 delimiter;
 
-Call text(105);
-
+-- Procedure Edit product infor (Admin Mode)
 delimiter $$
-create function delete_by_id(product_id varchar(20))
-returns int
-reads sql data
+create procedure edit_product_infor(in pro_id varchar(20), in pro_price int, in pro_new_name varchar(20))
 begin
-	declare result int default 1;
-    delete from product where product.product_id=product_id;
-    return result;
+	update product set 
 end;
 delimiter;
-
-

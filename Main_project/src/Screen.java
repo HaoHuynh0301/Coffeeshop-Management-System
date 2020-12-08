@@ -209,7 +209,7 @@ public class Screen extends JFrame{
                     var rs = stmt.executeQuery();
                     if(rs.next()) {
                         PreparedStatement stmt_2= null;
-                        stmt_2 = (PreparedStatement) conn.prepareStatement("DELETE FROM product where product_id=?");
+                        stmt_2 = (PreparedStatement) conn.prepareStatement("CALL reduce_product(?)");
                         stmt_2.setString(1, temp_reduce_product_name);
                         int rs_2=stmt_2.executeUpdate();
                         if(rs_2!=-1) {
@@ -235,7 +235,7 @@ public class Screen extends JFrame{
                     PreparedStatement stmt=(PreparedStatement) conn.prepareStatement("Call edit_product_infor(?, ?, ?)");
                     stmt.setString(1, arr_Products.get(list_product.getSelectedIndex()).getProduct_id());
                     stmt.setInt(2, Integer.parseInt(txt_product_price.getText()));
-                    stmt.setString(3, txt_Quantity.getText().toString());
+                    stmt.setString(3, txt_discount_code.getText().toString());
                     int rs=stmt.executeUpdate();
                     if(rs!=-1) {
                         JOptionPane.showMessageDialog(pannel_main, "Done");
