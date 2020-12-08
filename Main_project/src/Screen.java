@@ -202,7 +202,6 @@ public class Screen extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 var temp_reduce_product_name=txt_Quantity.getText().toString();
-                var temp_product_id= generateMyBigNumber(20);
                 PreparedStatement stmt= null;
                 try {
                     stmt = (PreparedStatement) conn.prepareStatement("SELECT * FROM product where product_id=?");
