@@ -51,6 +51,33 @@ begin
 end;
 delimiter;
 
+-- Trigger add point
+select * from data_history;
+
+drop trigger project.add_point;
+
+delimiter $$
+create trigger add_point 
+after insert on custumer_order
+for each row
+begin
+	insert into data_history(temp_customer_id) values (NEW.customer_id);
+end;
+delimiter;
+
+select * from customer;
+update customer set point=1 where customer_id="01";
+
+delimiter $$
+create trigger add_point_event
+after insert on data_history
+for each row
+begin
+	update customer set customer.point=customer.point+1 where customer.customer_id=NEW.temp_customer_id;
+end;
+delimiter;
+
+
 
 
 

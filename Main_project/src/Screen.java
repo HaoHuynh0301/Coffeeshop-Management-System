@@ -574,12 +574,17 @@ public class Screen extends JFrame{
         btn_Order.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                //Event for Order
                 if(FLAG_order==true) {
                     function.maximum_point(MAX_POINT, CUSTOMER_POINT, conn, pannel_main);
-                    var eval=txt_Quantity.getText().toString();
+                    var eval=txt_Quantity.getText().toString(); //Get Amount of product which customer wanna order
+
+                    //Set default quantity value if it was empty
                     if(eval.isEmpty()) {
                         eval="1";
                     }
+
                     var dis_code_temp=txt_discount_code.getText();
                     double temp_product_price;
                     int discount_value;
@@ -589,25 +594,6 @@ public class Screen extends JFrame{
                         stmt_dis = (PreparedStatement) conn.prepareStatement("Select * from Discount_Code where code=?");
                         stmt_dis.setString(1, dis_code_temp);
                         ResultSet rs_discount=stmt_dis.executeQuery();
-
-                        PreparedStatement stmt_point=(PreparedStatement) conn.prepareStatement("UPDATE Customer SET point=? WHERE customer_id=?");
-                        int POINT_PLUS=CUSTOMER_POINT+1;
-                        stmt_point.setInt(1, POINT_PLUS);
-                        stmt_point.setString(2, Customer_ID);
-                        int result_point=stmt_point.executeUpdate();
-
-                        if(result_point!=-1) {
-                            if(POINT_PLUS==MAX_POINT) {
-                                JOptionPane.showMessageDialog(pannel_main, "You recieve 1 discount code: BN01");
-                                PreparedStatement stmt_point_reset=(PreparedStatement) conn.prepareStatement("UPDATE Customer SET point=? WHERE customer_id=?");
-                                stmt_point.setInt(1, 0);
-                                stmt_point.setString(2, Customer_ID);
-                                int result_point_reset=stmt_point.executeUpdate();
-                                if(result_point_reset!=-1) {
-                                    System.out.println("Done");
-                                }
-                            }
-                        }
 
                         if(rs_discount.next()) {
                             var discount_type_code=rs_discount.getInt("discount_type");
@@ -620,9 +606,7 @@ public class Screen extends JFrame{
                                 txt_product_price.setText(""+(base_product_price*(1.0*discount_value/100)));
                             }
                         }
-                        else {
-                            JOptionPane.showMessageDialog(pannel_main, "Invalid Discount Code!");
-                        }
+
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
@@ -656,21 +640,34 @@ public class Screen extends JFrame{
                         mysql_order.setString(4, txt_Comment.getText());
                         boolean rs=mysql_order.execute();
 
+//                        if(POINT_PLUS==MAX_POINT) {
+//                            JOptionPane.showMessageDialog(pannel_main, "You recieve 1 discount code: BN01");
+//                            PreparedStatement stmt_point_reset=(PreparedStatement) conn.prepareStatement("UPDATE Customer SET point=? WHERE customer_id=?");
+//                            stmt_point.setInt(1, 0);
+//                            stmt_point.setString(2, Customer_ID);
+//                            int result_point_reset=stmt_point.executeUpdate();
+//                            if(result_point_reset!=-1) {
+//                                System.out.println("Done");
+//                            }
+//                        }
+
                         //increase point for Customer Ordering
-                        PreparedStatement stmt_point= (PreparedStatement) conn.prepareStatement("UPDATE Customer SET point");
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
                 }
+
+                //Event for Re-order
                 else {
                     function.maximum_point(MAX_POINT, CUSTOMER_POINT, conn, pannel_main);
                     var eval=txt_Quantity.getText();
+
                     if(eval.isEmpty()) {
                         eval="1";
                     }
-                    btn_Order.setText("Order");
+                    btn_Order.setText("Re-Order");
                     FLAG_order=true;
                     int temp_quantity;
                         temp_quantity=Integer.parseInt(eval);
