@@ -68,6 +68,9 @@ public class Screen extends JFrame{
     //Customer_ID
     private static String Customer_ID;
 
+    //Flag for admin mode
+    private boolean FLAG_admin=false;
+
     //Flag for sort
     private boolean FLAG_sort=true;
 
@@ -175,15 +178,15 @@ public class Screen extends JFrame{
         btn_add_product.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                var temp_new_product_name=txt_Quantity.getText().toString();
+                var temp_new_product_id=txt_Quantity.getText().toString();
                 var temp_new_product_price=Integer.parseInt(txt_product_price.getText());
-                var temp_product_id= generateMyBigNumber(20);
+                var temp_product_type_code= generateMyBigNumber(20);
                 PreparedStatement stmt= null;
                 try {
-                    stmt = (PreparedStatement) conn.prepareStatement("INSERT INTO product(product_id, product_type_code, product_price) VALUES(?, ?, ?)");
-                    stmt.setString(1, temp_new_product_name);
-                    stmt.setString(2, temp_product_id.toString());
-                    stmt.setInt(3, temp_new_product_price);
+                    stmt = (PreparedStatement) conn.prepareStatement("Call insert_product(?, ?, ?)");
+                    stmt.setInt(1, temp_new_product_price);
+                    stmt.setString(2, String.valueOf(temp_product_type_code));
+                    stmt.setString(3, temp_new_product_id);
                     int rs;
                     rs = stmt.executeUpdate();
                     if(rs!=-1) {
@@ -195,7 +198,7 @@ public class Screen extends JFrame{
                     throwables.printStackTrace();
                 }
             }
-        });
+        }); //Done
 
         //Button Reduce Product Event
         btn_reduce_product.addActionListener(new ActionListener() {
@@ -225,7 +228,7 @@ public class Screen extends JFrame{
                     throwables.printStackTrace();
                 }
             }
-        });
+        }); //Done
 
         //Button admin edit event
         btn_admin_edit.addActionListener(new ActionListener() {
@@ -245,7 +248,7 @@ public class Screen extends JFrame{
                     throwables.printStackTrace();
                 }
             }
-        });
+        }); //Done
 
         //Button Admin Event
         btn_admin.addActionListener(new ActionListener() {
@@ -274,6 +277,7 @@ public class Screen extends JFrame{
                         combobox_Method.setVisible(false);
                         btn_admin_edit.setVisible(true);
                         txt_Text_Quantity.setVisible(false);
+                        FLAG_admin=true;
                         //asign Customer ID
                         Customer_ID=rs.getString("customer_id");
 
@@ -301,7 +305,7 @@ public class Screen extends JFrame{
                     throwables.printStackTrace();
                 }
             }
-        });
+        }); //Done
 
         //Button Add To Favorite
         btn_addtofavorite.addActionListener(new ActionListener() {
@@ -310,7 +314,7 @@ public class Screen extends JFrame{
                 var index=list_product.getSelectedIndex();
                 var temp_product_id=arr_Products.get(index).getProduct_id();
                 PreparedStatement stmt=null;
-                var mysql="update Customer set favorite_product_id=? where customer_id=?";
+                var mysql="Call add_favorite(?, ?)";
                 try {
                     stmt=(PreparedStatement) conn.prepareStatement(mysql);
                     stmt.setString(1, temp_product_id);
@@ -327,7 +331,7 @@ public class Screen extends JFrame{
                     throwables.printStackTrace();
                 }
             }
-        });
+        }); //Done
 
         //Button Edit
         btn_edit.addActionListener(new ActionListener() {
@@ -407,7 +411,7 @@ public class Screen extends JFrame{
                 }
                 list_product.setModel(temp_product_model);
             }
-        });
+        }); //Done
 
         //Button Logout Event
         btn_Logout_2.addActionListener(new ActionListener() {
@@ -436,9 +440,10 @@ public class Screen extends JFrame{
                 pannel_listhistory.setVisible(true);
                 combobox_Method.setVisible(true);
                 btn_addtofavorite.setVisible(false);
+                FLAG_admin=false;
                 JOptionPane.showMessageDialog(pannel_main, "Logout Succeed!!!");
             }
-        });
+        }); //Done
 
         //Button Login Event
         btnLogin.addActionListener(new AbstractAction() {
@@ -458,7 +463,7 @@ public class Screen extends JFrame{
                 try {
 
                     //Test email and password for logging
-                    PreparedStatement stmt= (PreparedStatement) conn.prepareStatement("Select * from Customer where email_login=? and password_login=?");
+                    PreparedStatement stmt= (PreparedStatement) conn.prepareStatement("Call login(?, ?)");
                     stmt.setString(1, temp_email);
                     stmt.setString(2, temp_pass);
                     ResultSet rs=stmt.executeQuery();
@@ -494,7 +499,7 @@ public class Screen extends JFrame{
                     throwables.printStackTrace();
                 }
             }
-        });
+        }); //Done
 
         //Event for ComboBox Sort Type
         class ItemChangeListener implements ItemListener{
@@ -519,7 +524,7 @@ public class Screen extends JFrame{
             }
         }
 
-        comboBox_sort.addItemListener(new ItemChangeListener());
+        comboBox_sort.addItemListener(new ItemChangeListener()); //Done
 
         //Button Sign Up event
         btn_signup.addActionListener(new ActionListener() {
@@ -636,7 +641,7 @@ public class Screen extends JFrame{
                         var temp_payment_id=arr_method.get(combobox_Method.getSelectedIndex()).getCustomer_payment_method_id();
 
                         //insert into table Custumer_order
-                        PreparedStatement mysql_Customer_oder= (PreparedStatement) conn.prepareStatement("insert into Custumer_order values (?, ?, ?, ?)");
+                        PreparedStatement mysql_Customer_oder= (PreparedStatement) conn.prepareStatement("Call insert_customer_orderid(?, ?, ?, ?)");
                         mysql_Customer_oder.setString(1, temp_order_id.toString());
                         mysql_Customer_oder.setString(2, Customer_ID);
                         mysql_Customer_oder.setString(3, temp_payment_id);
@@ -653,7 +658,6 @@ public class Screen extends JFrame{
 
                         //increase point for Customer Ordering
                         PreparedStatement stmt_point= (PreparedStatement) conn.prepareStatement("UPDATE Customer SET point");
-
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
                     } catch (SQLException throwables) {
@@ -681,7 +685,7 @@ public class Screen extends JFrame{
                         var temp_payment_id=arr_method.get(combobox_Method.getSelectedIndex()).getCustomer_payment_method_id();
 
                         //insert into table Custumer_order
-                        PreparedStatement mysql_Customer_oder= (PreparedStatement) conn.prepareStatement("insert into Custumer_order values (?, ?, ?, ?)");
+                        PreparedStatement mysql_Customer_oder= (PreparedStatement) conn.prepareStatement("Call insert_customer_orderid(?, ?, ?, ?)");
                         mysql_Customer_oder.setString(1, temp_order_id.toString());
                         mysql_Customer_oder.setString(2, Customer_ID);
                         mysql_Customer_oder.setString(3, temp_payment_id);
@@ -747,7 +751,7 @@ public class Screen extends JFrame{
                     }
                 }
             }
-        });
+        }); //Done
 
         //Event when select JList Products
         list_product.addListSelectionListener(new ListSelectionListener() {
@@ -755,18 +759,14 @@ public class Screen extends JFrame{
             public void valueChanged(ListSelectionEvent e) {
                 if(!model.isEmpty()) {
                     int temp_order_id=list_product.getSelectedIndex();
+                    if(FLAG_admin==true) {
+                        txt_discount_code.setText(arr_Products.get(temp_order_id).getProduct_id());
+                    }
                     var price=arr_Products.get(temp_order_id).getProduct_price();
                     txt_product_price.setText(""+price);
                 }
             }
-        });
-
-        list_History.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int temp_history_item=list_History.getSelectedIndex();
-            }
-        });
+        }); //Done
     }
 
 
@@ -804,7 +804,7 @@ public class Screen extends JFrame{
             }
         }
         list_History.setModel(model_list_history);
-    }
+    } //Done
 
     //Insert data into JComboBox Sort
     private void insertSort(){
@@ -817,7 +817,7 @@ public class Screen extends JFrame{
             comboBox_sort.addItem(s);
         }
 
-    }
+    } //Done
 
     //Insert Method into JcomboBox Payment Method
     private void insertPayMentMethod() throws SQLException {
@@ -837,14 +837,14 @@ public class Screen extends JFrame{
         for(int i=0;i<3;i++) {
             combobox_Method.addItem(arr_method.get(i).getPayment_method_name());
         }
-    }
+    } //Done
 
     //Random number
     public static BigInteger generateMyBigNumber(int bit){
         Random ran = new Random();
         BigInteger res = new BigInteger(bit, ran);
         return  res;
-    }
+    } //Done
 
     //Connect to Mysql Database
     private static void connectData(){

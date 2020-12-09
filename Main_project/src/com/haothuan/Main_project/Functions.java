@@ -57,4 +57,11 @@ public class Functions  implements Serializable{
             JOptionPane.showMessageDialog(pannel_main, "You recieve 1 discount code: B10");
         }
     }
+//
+//    public ResultSet prepareStatement_function(ArrayList arr_values, Connection conn, String mysql) throws SQLException {
+//        PreparedStatement stmt=(PreparedStatement) conn.prepareStatement(mysql);
+//        for(int i=0; i<arr_values.size(); i++) {
+//            arr_values.get(i).);
+//        }
+//    }
 }
