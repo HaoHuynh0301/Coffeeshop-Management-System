@@ -682,6 +682,7 @@ public class Screen extends JFrame{
 
                         //increase point for Customer Ordering
                         list_product.setSelectedIndex(-1);
+                        insertCustomerHistory();
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
                     } catch (SQLException throwables) {
@@ -769,6 +770,7 @@ public class Screen extends JFrame{
                                 stmt_point_reset.setString(1, Customer_ID);
                                 var result_point_reset=stmt_point_reset.executeUpdate();
                                 if(result_point_reset!=-1) {
+                                    insertCustomerHistory();
                                     System.out.println("Done");
                                 }
                             }
@@ -843,7 +845,8 @@ public class Screen extends JFrame{
 
     //Insert data into JList History
     private void insertCustomerHistory() throws SQLException {
-        model_list_history=new DefaultListModel<>();
+        model_list_history.clear();
+        arr_history=new ArrayList<>();
         PreparedStatement stmt= null;
         try {
             stmt = (PreparedStatement) conn.prepareStatement("Select * from Custumer_order where customer_id=?");
