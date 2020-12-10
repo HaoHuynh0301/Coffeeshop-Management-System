@@ -47,6 +47,7 @@ public class Screen extends JFrame{
     private JButton btn_admin_edit;
     private JScrollPane pannel_croll_method;
     private JLabel txt_text_change_dis_rename;
+    private JLabel txt_change_Comment;
     private JButton btn_text;
     private JButton btn_Submit;
     JButton button = new JButton();
@@ -143,13 +144,11 @@ public class Screen extends JFrame{
 
         //Setup for inserting elements into JList History
         model_list_history=new DefaultListModel<>();
-        arr_history=new ArrayList<>();
         customer_history=null;
 
         //Setup for inserting emelents into Jlist
         model_temp=new DefaultListModel<>();
         model = new DefaultListModel<>();
-        arr_Products=new ArrayList<>();
 
         //Setup for inserting users for logining
         arr_Mysql=new ArrayList<>();
@@ -179,23 +178,34 @@ public class Screen extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 var temp_new_product_id=txt_Quantity.getText().toString();
-                var temp_new_product_price=Integer.parseInt(txt_product_price.getText());
-                var temp_product_type_code= generateMyBigNumber(20);
-                PreparedStatement stmt= null;
-                try {
-                    stmt = (PreparedStatement) conn.prepareStatement("Call insert_product(?, ?, ?)");
-                    stmt.setInt(1, temp_new_product_price);
-                    stmt.setString(2, String.valueOf(temp_product_type_code));
-                    stmt.setString(3, temp_new_product_id);
-                    int rs;
-                    rs = stmt.executeUpdate();
-                    if(rs!=-1) {
-                        JOptionPane.showMessageDialog(pannel_main, "Insert Succeed!!!");
-                        txt_Quantity.setText("");
-                        txt_product_price.setText("");
+                if(txt_product_price.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(pannel_main, "Input product's price!!!");
+                }
+                else {
+                    var temp_new_product_price=Integer.parseInt(txt_product_price.getText());
+                    var temp_product_type_code= generateMyBigNumber(20);
+                    PreparedStatement stmt= null;
+                    try {
+                        stmt = (PreparedStatement) conn.prepareStatement("Call insert_product(?, ?, ?)");
+                        stmt.setInt(1, temp_new_product_price);
+                        stmt.setString(2, String.valueOf(temp_product_type_code));
+                        stmt.setString(3, temp_new_product_id);
+                        int rs;
+                        rs = stmt.executeUpdate();
+                        if(rs!=-1) {
+                            JOptionPane.showMessageDialog(pannel_main, "Insert Succeed!!!");
+                            model.clear();
+                            connectData();
+                            for(Product product : arr_Products) {
+                                model.addElement(product.getProduct_id());
+                            }
+                            list_product.setModel(model);
+                            txt_Quantity.setText("");
+                            txt_product_price.setText("");
+                        }
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
                     }
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
                 }
             }
         }); //Done
@@ -217,6 +227,12 @@ public class Screen extends JFrame{
                         int rs_2=stmt_2.executeUpdate();
                         if(rs_2!=-1) {
                             JOptionPane.showMessageDialog(pannel_main, "Delete Succeed");
+                            model.clear();
+                            connectData();
+                            for(Product product : arr_Products) {
+                                model.addElement(product.getProduct_id());
+                            }
+                            list_product.setModel(model);
                             txt_Quantity.setText("");
                         }
                     }
@@ -241,7 +257,13 @@ public class Screen extends JFrame{
                     stmt.setString(3, txt_discount_code.getText().toString());
                     int rs=stmt.executeUpdate();
                     if(rs!=-1) {
-                        JOptionPane.showMessageDialog(pannel_main, "Done");
+                        model.clear();
+                        connectData();
+                        for(Product product : arr_Products) {
+                            model.addElement(product.getProduct_id());
+                        }
+                        list_product.setModel(model);
+                        JOptionPane.showMessageDialog(pannel_main, "Edit product information succeed!");
                     }
 
                 } catch (SQLException throwables) {
@@ -277,6 +299,8 @@ public class Screen extends JFrame{
                         combobox_Method.setVisible(false);
                         btn_admin_edit.setVisible(true);
                         txt_Text_Quantity.setVisible(false);
+                        txt_change_Comment.setVisible(false);
+                        txt_Comment.setVisible(false);
                         FLAG_admin=true;
                         //asign Customer ID
                         Customer_ID=rs.getString("customer_id");
@@ -893,6 +917,7 @@ public class Screen extends JFrame{
         return  res;
     } //Done
 
+
     //Connect to Mysql Database
     private static void connectData(){
         try {
@@ -912,6 +937,10 @@ public class Screen extends JFrame{
 
             var statement_2=conn.prepareStatement(sql_2);
             var resultSet_2 = statement_2.executeQuery();
+
+            arr_Products=new ArrayList<>();
+            arr_history=new ArrayList<>();
+
 
             while (resultSet.next()) {
                 mysql=new User();

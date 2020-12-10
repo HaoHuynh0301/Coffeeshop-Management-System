@@ -1,6 +1,6 @@
 use project;
 
--- Procedure Insert (Admin Mode) 1
+-- Procedure Insert (Admin Mode)
 delimiter $$
 create procedure insert_product(in pro_price int, in pro_type_code varchar(20), in pro_id varchar(20))
 begin
@@ -8,7 +8,7 @@ begin
 end;
 delimiter;
 
--- Procedure Reduce (Admin Mode) 2
+-- Procedure Reduce (Admin Mode)
 delimiter $$
 create procedure reduce_product(in pro_id varchar(20))
 begin
@@ -16,7 +16,7 @@ begin
 end; 
 delimiter;
 
--- Procedure Edit product infor (Admin Mode) 3
+-- Procedure Edit product infor (Admin Mode)
 delimiter $$
 create procedure edit_product_infor(in pro_id varchar(20), in pro_price int, in pro_new_name varchar(20))
 begin
@@ -24,9 +24,7 @@ begin
 end;
 delimiter;
 
--- Procedure Update Favorite product 4
-
-select * from Customer;
+-- Procedure Update Favorite product
 
 delimiter $$
 create procedure add_favorite(in pro_id varchar(20), in cus_id varchar(20))
@@ -35,7 +33,7 @@ begin
 end;
 delimiter;
 
--- Procedure Login 5
+-- Procedure Login
 delimiter $$
 create procedure login(in email varchar(20), in pass varchar(20))
 	Select * from Customer where email_login=email and password_login=pass;
@@ -43,7 +41,7 @@ begin
 end;
 delimiter;
 
--- Procedure insert to Customer_order table 6
+-- Procedure insert to Customer_order table
 delimiter $$
 create procedure insert_customer_orderid(in order_id varchar(20), in cus_id varchar(20), in payment_id varchar(20), in date_input date)
 begin
@@ -51,7 +49,7 @@ begin
 end;
 delimiter;
 
--- Trigger add point 7
+-- Trigger add point
 
 delimiter $$
 create trigger add_point 
@@ -62,7 +60,7 @@ begin
 end;
 delimiter;
 
-delimiter $$ -- 8
+delimiter $$
 create trigger add_point_event
 after insert on data_history
 for each row
@@ -71,7 +69,7 @@ begin
 end;
 delimiter;
 
--- Procedure insesrt new user 9
+-- Procedure insesrt new user
 delimiter $$
 create procedure sign_up(in cus_id varchar(20), in email_login varchar(20), in pass_login varchar(20))
 begin
@@ -79,7 +77,7 @@ begin
 end;
 delimiter;
 
--- Procedure get customer point 10
+-- Procedure get customer point
 delimiter $$
 create procedure get_point(in cus_id varchar(20))
 begin
@@ -87,7 +85,7 @@ begin
 end;
 delimiter;
 
--- Procedure update point 11
+-- Procedure update point
 delimiter $$
 create procedure update_point(in cus_id varchar(20))
 begin
@@ -95,7 +93,9 @@ begin
 end;
 delimiter;
 
--- Procedure insert into customer order product 12
+select * from data_history;
+
+-- Procedure insert into customer order product
 delimiter $$
 create procedure insert_customer_order_products(in temp_order_id varchar(20), in pro_id varchar(20), in pro_quantity int, in temp_comment text)
 begin
@@ -104,8 +104,9 @@ end;
 delimiter;
 
 
--- 10 procedures
--- 2 triggers
+
+
+
 
 
 
