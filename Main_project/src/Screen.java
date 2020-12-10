@@ -460,6 +460,7 @@ public class Screen extends JFrame{
                 btn_addtofavorite.setVisible(true);
                 String temp_email=txt_email_input.getText();
                 String temp_pass=txt_pass_input.getText().toString();
+                connectData();
                 try {
 
                     //Test email and password for logging
