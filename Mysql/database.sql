@@ -9,7 +9,6 @@ create table Discount_Code (
     company_name varchar(20)
 );
 
-select * from Discount_Code;
 
 create table Customer (
 	customer_id varchar(20) primary key not null,
@@ -20,7 +19,6 @@ create table Customer (
     foreign key(favorite_product_id) references product(product_id)
 );
 
-select * from Customer;
 
 create table Custumer_order (
 	order_id varchar(20) primary key not null,
@@ -36,7 +34,6 @@ create table product (
     product_price int not null
 );
 
-select * from product;
 
 create table customer_payment_method (
 	customer_payment_method_id varchar(20) primary key not null,
@@ -49,6 +46,16 @@ create table customer_order_products (
     quantity int default(1),
     primary key (order_id, product_id),
     comment text
+);
+
+create table reset_count(
+	reset_time_id int not null AUTO_INCREMENT primary key,
+    count_values int default(0)
+);
+
+create table data_history(
+	count_id int AUTO_INCREMENT primary key,
+    temp_customer_id varchar(20)
 );
 
 

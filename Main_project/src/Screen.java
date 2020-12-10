@@ -547,20 +547,20 @@ public class Screen extends JFrame{
                         var temp_new_email = txt_email_input.getText();
                         var temp_password = txt_pass_input.getText();
                         try {
-                            PreparedStatement mysql_order = (PreparedStatement) conn.prepareStatement("insert into Customer(customer_id, email_login, password_login)    values (?, ?, ?)");
+                            PreparedStatement mysql_order = (PreparedStatement) conn.prepareStatement("Call sign_up(?, ?, ?)");
                             mysql_order.setString(1, temp_customer_id.toString());
                             mysql_order.setString(2, temp_new_email);
                             mysql_order.setString(3, temp_password.toString());
                             boolean rs = mysql_order.execute();
-                                txt_change_email_login.setText("Email: ");
-                                txt_password_change_login.setText("Password");
-                                btnLogin.setVisible(true);
-                                btn_edit.setVisible(true);
-                                btn_admin.setVisible(true);
-                                txt_pass_input.setText("");
-                                txt_email_input.setText("");
-                                JOptionPane.showMessageDialog(pannel_main, "Sign Up Succeed!!!");
-                                txt_email_input.setText("");
+                            txt_change_email_login.setText("Email: ");
+                            txt_password_change_login.setText("Password");
+                            btnLogin.setVisible(true);
+                            btn_edit.setVisible(true);
+                            btn_admin.setVisible(true);
+                            txt_pass_input.setText("");
+                            txt_email_input.setText("");
+                            JOptionPane.showMessageDialog(pannel_main, "Sign Up Succeed!!!");
+                            txt_email_input.setText("");
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
@@ -568,7 +568,7 @@ public class Screen extends JFrame{
 
                 }
             }
-        });
+        }); //Done
 
         //Button Order Event
         btn_Order.addActionListener(new AbstractAction() {
@@ -630,28 +630,33 @@ public class Screen extends JFrame{
                         mysql_Customer_oder.setString(2, Customer_ID);
                         mysql_Customer_oder.setString(3, temp_payment_id);
                         mysql_Customer_oder.setString(4, String.valueOf(date));
-                        boolean rs_customer_order=mysql_Customer_oder.execute();
+                        var rs_customer_order=mysql_Customer_oder.executeUpdate();
 
                         //insert into table customer order product
-                        PreparedStatement mysql_order= (PreparedStatement) conn.prepareStatement("insert into customer_order_products values (?, ?, ?, ?)");
+                        PreparedStatement mysql_order= (PreparedStatement) conn.prepareStatement("call insert_customer_order_products(?, ?, ?, ?)");
                         mysql_order.setString(1, temp_order_id.toString());
                         mysql_order.setString(2, arr_Products.get(list_product.getSelectedIndex()).getProduct_id());
                         mysql_order.setInt(3, temp_quantity);
                         mysql_order.setString(4, txt_Comment.getText());
                         boolean rs=mysql_order.execute();
 
-//                        if(POINT_PLUS==MAX_POINT) {
-//                            JOptionPane.showMessageDialog(pannel_main, "You recieve 1 discount code: BN01");
-//                            PreparedStatement stmt_point_reset=(PreparedStatement) conn.prepareStatement("UPDATE Customer SET point=? WHERE customer_id=?");
-//                            stmt_point.setInt(1, 0);
-//                            stmt_point.setString(2, Customer_ID);
-//                            int result_point_reset=stmt_point.executeUpdate();
-//                            if(result_point_reset!=-1) {
-//                                System.out.println("Done");
-//                            }
-//                        }
+                        PreparedStatement stmt_count_point=(PreparedStatement) conn.prepareStatement("Call get_point(?)");
+                        stmt_count_point.setString(1, Customer_ID);
+                        var rs_get_point=stmt_count_point.executeQuery();
+                        if(rs_get_point.next()) {
+                            if(rs_get_point.getInt("point")==MAX_POINT) {
+                                JOptionPane.showMessageDialog(pannel_main, "You recieve 1 discount code: BN01");
+                                PreparedStatement stmt_point_reset=(PreparedStatement) conn.prepareStatement("Call update_point(?)");
+                                stmt_point_reset.setString(1, Customer_ID);
+                                var result_point_reset=stmt_point_reset.executeUpdate();
+                                if(result_point_reset!=-1) {
+                                    System.out.println("Done");
+                                }
+                            }
+                        }
 
                         //increase point for Customer Ordering
+                        list_product.setSelectedIndex(-1);
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
                     } catch (SQLException throwables) {
@@ -667,6 +672,33 @@ public class Screen extends JFrame{
                     if(eval.isEmpty()) {
                         eval="1";
                     }
+
+                    var dis_code_temp=txt_discount_code.getText();
+                    double temp_product_price;
+                    int discount_value;
+                    int base_product_price= Integer.parseInt(txt_product_price.getText());
+                    PreparedStatement stmt_dis= null;
+                    try {
+                        stmt_dis = (PreparedStatement) conn.prepareStatement("Select * from Discount_Code where code=?");
+                        stmt_dis.setString(1, dis_code_temp);
+                        ResultSet rs_discount=stmt_dis.executeQuery();
+
+                        if(rs_discount.next()) {
+                            var discount_type_code=rs_discount.getInt("discount_type");
+                            if(discount_type_code==1) {
+                                discount_value=rs_discount.getInt("discount_value");
+                                txt_product_price.setText(""+(base_product_price-discount_value));
+                            }
+                            else {
+                                discount_value=rs_discount.getInt("percent_discount");
+                                txt_product_price.setText(""+(base_product_price*(1.0*discount_value/100)));
+                            }
+                        }
+
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+
                     btn_Order.setText("Re-Order");
                     FLAG_order=true;
                     int temp_quantity;
@@ -694,7 +726,7 @@ public class Screen extends JFrame{
                         ResultSet rs_product_temp=stmt.executeQuery();
                         if(rs_product_temp.next()) {
                             var temp_product= rs_product_temp.getString("product_id");
-                            PreparedStatement mysql_order= (PreparedStatement) conn.prepareStatement("insert into customer_order_products values (?, ?, ?, ?)");
+                            PreparedStatement mysql_order= (PreparedStatement) conn.prepareStatement("Call insert_customer_order_products(?, ?, ?, ?)");
                             mysql_order.setString(1, temp_order_id.toString());
                             mysql_order.setString(2, temp_product);
                             mysql_order.setInt(3, temp_quantity);
@@ -702,8 +734,24 @@ public class Screen extends JFrame{
                             boolean rs=mysql_order.execute();
                         }
 
+                        PreparedStatement stmt_count_point=(PreparedStatement) conn.prepareStatement("Call get_point(?)");
+                        stmt_count_point.setString(1, Customer_ID);
+                        var rs_get_point=stmt_count_point.executeQuery();
+                        if(rs_get_point.next()) {
+                            if(rs_get_point.getInt("point")==MAX_POINT) {
+                                JOptionPane.showMessageDialog(pannel_main, "You recieve 1 discount code: BN01");
+                                PreparedStatement stmt_point_reset=(PreparedStatement) conn.prepareStatement("Call update_point(?)");
+                                stmt_point_reset.setString(1, Customer_ID);
+                                var result_point_reset=stmt_point_reset.executeUpdate();
+                                if(result_point_reset!=-1) {
+                                    System.out.println("Done");
+                                }
+                            }
+                        }
+
                         //insert into table customer order product
 
+                        list_History.setSelectedIndex(-1);
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
                     } catch (SQLException throwables) {
@@ -711,7 +759,7 @@ public class Screen extends JFrame{
                     }
                 }
             }
-        });
+        }); //Done
 
         //Event when select Jlist history
         list_History.addListSelectionListener(new ListSelectionListener() {
@@ -756,6 +804,7 @@ public class Screen extends JFrame{
             public void valueChanged(ListSelectionEvent e) {
                 if(!model.isEmpty()) {
                     int temp_order_id=list_product.getSelectedIndex();
+                    btn_Order.setText("Order");
                     if(FLAG_admin==true) {
                         txt_discount_code.setText(arr_Products.get(temp_order_id).getProduct_id());
                     }
