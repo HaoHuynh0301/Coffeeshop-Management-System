@@ -74,3 +74,6 @@ https://sites.google.com/site/ttkuzze/hoctap/java/sap-xep-lai-doi-tuong-trong-ar
 
 #TextField Hint
 https://stackoverflow.com/questions/1738966/java-jtextfield-with-input-hint
+
+#Javaswing UI design
+https://www.youtube.com/watch?v=1nEluKUOic8
