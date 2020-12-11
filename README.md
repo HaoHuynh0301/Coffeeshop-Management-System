@@ -3,23 +3,23 @@
 #Create your database with Mysql with Mysql file
 
 #Connect to database
-try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/root";// your db name
-            String user = "root"; // your db username
-            String password = "hao152903"; // your db password
-            Connection conn = DriverManager.getConnection(url, user, password);
-            if (conn != null) {
-                System.out.println("Connect success!");
+            try {
+                        Class.forName("com.mysql.cj.jdbc.Driver");
+                        String url = "jdbc:mysql://localhost:3306/root";// your db name
+                        String user = "root"; // your db username
+                        String password = "hao152903"; // your db password
+                        Connection conn = DriverManager.getConnection(url, user, password);
+                        if (conn != null) {
+                        System.out.println("Connect success!");
+                        }
+                        String id="1";
+                        var sql = "select * from user where user.id_code="+id;
+                        var statement = conn.prepareStatement(sql);
+                        var resultSet = statement.executeQuery();
+                        } catch (ClassNotFoundException | SQLException e) {
+                        e.printStackTrace();
+                        }
             }
-            String id="1";
-            var sql = "select * from user where user.id_code="+id;
-            var statement = conn.prepareStatement(sql);
-            var resultSet = statement.executeQuery();
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-}
 
 
 #Create random id
