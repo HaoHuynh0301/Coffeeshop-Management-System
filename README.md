@@ -75,3 +75,6 @@ https://stackoverflow.com/questions/1738966/java-jtextfield-with-input-hint
 
 #Javaswing UI design
 https://www.youtube.com/watch?v=1nEluKUOic8
+
+#Javaswing examples UI design
+https://www.pinterest.es/laurafolgadog/java-swing/
