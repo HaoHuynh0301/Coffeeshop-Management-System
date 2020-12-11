@@ -71,3 +71,6 @@ list_product.setModel(model);
     
 #Sort
 https://sites.google.com/site/ttkuzze/hoctap/java/sap-xep-lai-doi-tuong-trong-arraylist
+
+#TextField Hint
+https://stackoverflow.com/questions/1738966/java-jtextfield-with-input-hint
