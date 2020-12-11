@@ -15,8 +15,7 @@ try {
             String id="1";
             var sql = "select * from user where user.id_code="+id;
             var statement = conn.prepareStatement(sql);
-            var resultSet = statement.execute   xQuery();
-            
+            var resultSet = statement.executeQuery();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -30,7 +29,6 @@ public class MyBigInteger {
         BigInteger number = generateMyBigNumber(200);
         System.out.println("My big number is: " + number);
     }
-
     public static BigInteger generateMyBigNumber(int bit){
         Random ran = new Random();
         BigInteger res = new BigInteger(bit, ran);
@@ -60,14 +58,14 @@ public class MyBigInteger {
                 
 #Create Jlist and insert Elements into it
 
-DefaultListModel<String> model;
-private static ArrayList<Product> arr_Products;
-model = new DefaultListModel<>();
-arr_Products=new ArrayList<>();
-for(Product product : arr_Products) {
-    model.addElement(product.getProduct_id());
-}
-list_product.setModel(model);
+            DefaultListModel<String> model;
+            private static ArrayList<Product> arr_Products;
+            model = new DefaultListModel<>();
+            arr_Products=new ArrayList<>();
+            for(Product product : arr_Products) {
+                model.addElement(product.getProduct_id());
+            }
+            list_product.setModel(model);
     
 #Sort
 https://sites.google.com/site/ttkuzze/hoctap/java/sap-xep-lai-doi-tuong-trong-arraylist
