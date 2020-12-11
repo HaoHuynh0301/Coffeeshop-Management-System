@@ -48,9 +48,11 @@ public class Screen extends JFrame{
     private JScrollPane pannel_croll_method;
     private JLabel txt_text_change_dis_rename;
     private JLabel txt_change_Comment;
+    private JPanel pannel_button;
+    private JLabel txt_text_change_edit;
+    private JLabel txt_text_change_signup;
     private JButton btn_text;
     private JButton btn_Submit;
-    JButton button = new JButton();
     private Functions function=new Functions();
 
     //Customer's Point
@@ -108,7 +110,7 @@ public class Screen extends JFrame{
     private static User mysql=null;
 
     //Components for Customer Order
-    private static Customer_order_products COP;
+
 
     private static Connection conn;
 
@@ -120,14 +122,15 @@ public class Screen extends JFrame{
 
         //Declare
         btn_admin_edit.setVisible(false);
-        btn_Back.setVisible(false);
+        btn_Back.setVisible(true);
         btn_addtofavorite.setVisible(false);
         btn_edit.setVisible(true);
-        btn_Logout_2.setVisible(false);
+        btn_Logout_2.setVisible(true);
         txt_Text_edit_product_list.setVisible(false);
         btn_add_product.setVisible(false);
         btn_reduce_product.setVisible(false);
         list_product.setVisible(false);
+        btn_Order.setVisible(false);
 
         //Setup for insert into comboBox sort
         arr_sort_code=new ArrayList<>();
@@ -140,7 +143,7 @@ public class Screen extends JFrame{
         Customer_ID="";
 
         //Setup for add net Customer_order_products
-        COP=new Customer_order_products();
+//        COP=new Customer_order_products();
 
         //Setup for inserting elements into JList History
         model_list_history=new DefaultListModel<>();
@@ -154,11 +157,8 @@ public class Screen extends JFrame{
         arr_Mysql=new ArrayList<>();
         User mysql=null;
 
-        //Set Visible for Button Order
-        btn_Order.setVisible(true);
-
         //Button Back Event
-        btn_Back.addActionListener(new AbstractAction() {
+        btn_Back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 txt_change_email_login.setText("Email");
@@ -169,7 +169,6 @@ public class Screen extends JFrame{
                 btn_signup.setVisible(true);
                 btn_edit.setVisible(true);
                 btnLogin.setVisible(true);
-                btn_Back.setVisible(false);
             }
         });
 
@@ -373,9 +372,6 @@ public class Screen extends JFrame{
                 }
                 if(FLAG_edit==true) {
                     FLAG_edit=false;
-                    btnLogin.setVisible(false);
-                    btn_signup.setVisible(false);
-                    btn_Back.setVisible(true);
                     txt_password_change_login.setText("Input your new password");
                 }
                 else {
@@ -447,9 +443,9 @@ public class Screen extends JFrame{
                 txt_Comment.setText("");
                 txt_text_change_dis_rename.setText("Discount");
                 btnLogin.setVisible(true);
-                btn_Back.setVisible(false);
                 btn_signup.setVisible(true);
                 btn_edit.setVisible(true);
+                btn_Order.setVisible(false);
                 model_list_history.clear();
                 comboBox_sort.removeAllItems();
                 combobox_Method.removeAllItems();
@@ -460,7 +456,7 @@ public class Screen extends JFrame{
                 btn_add_product.setVisible(false);
                 btn_reduce_product.setVisible(false);
                 txt_Text_edit_product_list.setVisible(false);
-                btn_Logout_2.setVisible(false);
+                btn_Logout_2.setVisible(true);
                 pannel_listhistory.setVisible(true);
                 combobox_Method.setVisible(true);
                 btn_addtofavorite.setVisible(false);
@@ -474,13 +470,13 @@ public class Screen extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                btnLogin.setVisible(false);
-                btn_signup.setVisible(false);
                 btn_edit.setVisible(true);
                 btn_Logout_2.setVisible(true);
                 list_product.setVisible(true);
                 list_History.setVisible(true);
                 btn_Order.setVisible(true);
+                txt_change_Comment.setVisible(true);
+                txt_Comment.setVisible(true);
                 btn_addtofavorite.setVisible(true);
                 String temp_email=txt_email_input.getText();
                 String temp_pass=txt_pass_input.getText().toString();
@@ -555,12 +551,8 @@ public class Screen extends JFrame{
         btn_signup.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btn_Back.setVisible(true);
                 if (FLAG == true) {
                     FLAG = false;
-                    btnLogin.setVisible(false);
-                    btn_edit.setVisible(false);
-                    btn_admin.setVisible(false);
                     txt_email_input.setText("");
                     txt_pass_input.setText("");
                     txt_change_email_login.setText("Input your email: ");
@@ -599,7 +591,6 @@ public class Screen extends JFrame{
         btn_Order.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 //Event for Order
                 if(FLAG_order==true) {
                     function.maximum_point(MAX_POINT, CUSTOMER_POINT, conn, pannel_main);
