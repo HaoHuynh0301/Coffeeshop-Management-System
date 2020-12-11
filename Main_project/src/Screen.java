@@ -126,7 +126,6 @@ public class Screen extends JFrame{
         btn_addtofavorite.setVisible(false);
         btn_edit.setVisible(true);
         btn_Logout_2.setVisible(true);
-        txt_Text_edit_product_list.setVisible(false);
         btn_add_product.setVisible(false);
         btn_reduce_product.setVisible(false);
         list_product.setVisible(false);
@@ -290,7 +289,6 @@ public class Screen extends JFrame{
                         pannel_login.setVisible(false);
                         txt_Text_Quantity.setVisible(false);
                         btn_Order.setVisible(false);
-                        txt_Text_edit_product_list.setVisible(true);
                         pannel_listhistory.setVisible(false);
                         btn_add_product.setVisible(true);
                         btn_reduce_product.setVisible(true);
@@ -455,7 +453,6 @@ public class Screen extends JFrame{
                 pannel_login.setVisible(true);
                 btn_add_product.setVisible(false);
                 btn_reduce_product.setVisible(false);
-                txt_Text_edit_product_list.setVisible(false);
                 btn_Logout_2.setVisible(true);
                 pannel_listhistory.setVisible(true);
                 combobox_Method.setVisible(true);
@@ -783,6 +780,7 @@ public class Screen extends JFrame{
         list_History.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                list_product.setSelectedIndex(-1);
                 if (!model_list_history.isEmpty()) {
                     FLAG_order=false;
                     int temp_history_selection=list_History.getSelectedIndex();
@@ -821,6 +819,7 @@ public class Screen extends JFrame{
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if(!model.isEmpty()) {
+                    list_History.setSelectedIndex(-1);
                     int temp_order_id=list_product.getSelectedIndex();
                     btn_Order.setText("Order");
                     if(FLAG_admin==true) {

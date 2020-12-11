@@ -128,7 +128,7 @@
               <component id="68ff6" class="javax.swing.JList" binding="list_product">
                 <constraints/>
                 <properties>
-                  <background color="-2960944"/>
+                  <background color="-1"/>
                   <enabled value="true"/>
                   <font name="DialogInput" size="26"/>
                 </properties>
@@ -142,6 +142,7 @@
               </grid>
             </constraints>
             <properties>
+              <background color="-1"/>
               <font name="JetBrains Mono" size="20"/>
               <inheritsPopupMenu value="false"/>
             </properties>
@@ -156,6 +157,7 @@
               <component id="3d222" class="javax.swing.JList" binding="list_History">
                 <constraints/>
                 <properties>
+                  <background color="-1"/>
                   <font name="JetBrains Mono" size="24"/>
                   <maximumSize width="0" height="400"/>
                   <model/>
@@ -202,16 +204,8 @@
               <background color="-9928773"/>
               <font size="22"/>
               <foreground color="-1"/>
-              <text value="Reduce"/>
-            </properties>
-          </component>
-          <component id="32dc3" class="javax.swing.JLabel" binding="txt_Text_edit_product_list">
-            <constraints>
-              <grid row="5" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="10" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font name="JetBrains Mono" size="36" style="1"/>
-              <text value="EDIT PRODUCT LIST"/>
+              <icon value="images/icons8-minus-52.png"/>
+              <text value=""/>
             </properties>
           </component>
           <component id="14f31" class="javax.swing.JLabel">
@@ -228,6 +222,7 @@
               <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <background color="-1"/>
               <font size="18"/>
             </properties>
           </component>
@@ -280,12 +275,13 @@
               <background color="-9928773"/>
               <font size="22"/>
               <foreground color="-1"/>
-              <text value="Add"/>
+              <icon value="images/icons8-plus-52.png"/>
+              <text value=""/>
             </properties>
           </component>
         </children>
       </grid>
-      <grid id="2e8db" layout-manager="GridLayoutManager" row-count="3" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="2e8db" layout-manager="GridLayoutManager" row-count="2" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -303,20 +299,6 @@
             </constraints>
             <properties>
               <font name="JetBrains Mono" size="26"/>
-            </properties>
-          </component>
-          <component id="3b982" class="javax.swing.JButton" binding="btn_Order">
-            <constraints>
-              <grid row="2" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                <minimum-size width="-1" height="100"/>
-                <preferred-size width="50" height="-1"/>
-              </grid>
-            </constraints>
-            <properties>
-              <background color="-9928773"/>
-              <font name="JetBrains Mono" size="26"/>
-              <foreground color="-1"/>
-              <text value="Order"/>
             </properties>
           </component>
           <component id="8d89a" class="javax.swing.JTextField" binding="txt_Comment">
@@ -347,6 +329,20 @@
               <font size="26"/>
               <foreground color="-1"/>
               <text value="Comment"/>
+            </properties>
+          </component>
+          <component id="3b982" class="javax.swing.JButton" binding="btn_Order">
+            <constraints>
+              <grid row="0" column="6" row-span="2" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <minimum-size width="150" height="70"/>
+                <preferred-size width="50" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <background color="-9928773"/>
+              <font name="JetBrains Mono" size="26"/>
+              <foreground color="-1"/>
+              <text value="Order"/>
             </properties>
           </component>
         </children>
