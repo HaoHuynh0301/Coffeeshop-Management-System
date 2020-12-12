@@ -78,3 +78,6 @@ https://www.youtube.com/watch?v=1nEluKUOic8
 
 #Javaswing examples UI design
 https://www.pinterest.es/laurafolgadog/java-swing/
+
+#JDBC Statement
+https://giasutinhoc.vn/lap-trinh/lap-trinh-co-so-du-lieu-voi-jdbc/jdbc-statement-trong-java-bai-4-2/

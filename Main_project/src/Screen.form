@@ -44,7 +44,7 @@
               <background color="-985355"/>
               <caretColor color="-2432801"/>
               <disabledTextColor color="-985355"/>
-              <font size="24"/>
+              <font size="28"/>
               <foreground color="-12828863"/>
               <opaque value="true"/>
               <requestFocusEnabled value="true"/>
@@ -67,7 +67,7 @@
             <properties>
               <background color="-985355"/>
               <disabledTextColor color="-985355"/>
-              <font size="24"/>
+              <font size="28"/>
               <foreground color="-12828863"/>
               <opaque value="true"/>
               <requestFocusEnabled value="true"/>
@@ -131,6 +131,7 @@
                   <background color="-1"/>
                   <enabled value="true"/>
                   <font name="DialogInput" size="26"/>
+                  <selectionForeground color="-1"/>
                 </properties>
               </component>
             </children>

@@ -188,9 +188,8 @@ public class Screen extends JFrame{
                         stmt.setInt(1, temp_new_product_price);
                         stmt.setString(2, String.valueOf(temp_product_type_code));
                         stmt.setString(3, temp_new_product_id);
-                        int rs;
-                        rs = stmt.executeUpdate();
-                        if(rs!=-1) {
+                        var rs = stmt.executeUpdate();
+                        if(rs==1) {
                             JOptionPane.showMessageDialog(pannel_main, "Insert Succeed!!!");
                             model.clear();
                             connectData();
@@ -200,6 +199,9 @@ public class Screen extends JFrame{
                             list_product.setModel(model);
                             txt_Quantity.setText("");
                             txt_product_price.setText("");
+                        }
+                        else {
+                            JOptionPane.showMessageDialog(pannel_main, "Error!! Try again");
                         }
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
@@ -248,12 +250,13 @@ public class Screen extends JFrame{
         btn_admin_edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                list_product.setSelectedIndex(-1);
                 try {
                     PreparedStatement stmt=(PreparedStatement) conn.prepareStatement("Call edit_product_infor(?, ?, ?)");
                     stmt.setString(1, arr_Products.get(list_product.getSelectedIndex()).getProduct_id());
                     stmt.setInt(2, Integer.parseInt(txt_product_price.getText()));
-                    stmt.setString(3, txt_discount_code.getText().toString());
-                    int rs=stmt.executeUpdate();
+                    stmt.setString(3, txt_discount_code.getText());
+                    var rs=stmt.executeUpdate();
                     if(rs!=-1) {
                         model.clear();
                         connectData();
@@ -262,8 +265,9 @@ public class Screen extends JFrame{
                         }
                         list_product.setModel(model);
                         JOptionPane.showMessageDialog(pannel_main, "Edit product information succeed!");
+                        txt_discount_code.setText("");
+                        txt_product_price.setText("");
                     }
-
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -389,7 +393,6 @@ public class Screen extends JFrame{
                                 stmt_change_pass.setString(2, temp_email_confirm);
                                 boolean rs_change_password = stmt_change_pass.execute();
                                 JOptionPane.showMessageDialog(pannel_main, "Change Password Succeed!!!");
-                                btn_edit.setVisible(false);
                                 btnLogin.setVisible(true);
                                 btn_signup.setVisible(true);
                                 txt_pass_input.setText("");
@@ -467,14 +470,6 @@ public class Screen extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                btn_edit.setVisible(true);
-                btn_Logout_2.setVisible(true);
-                list_product.setVisible(true);
-                list_History.setVisible(true);
-                btn_Order.setVisible(true);
-                txt_change_Comment.setVisible(true);
-                txt_Comment.setVisible(true);
-                btn_addtofavorite.setVisible(true);
                 String temp_email=txt_email_input.getText();
                 String temp_pass=txt_pass_input.getText().toString();
                 connectData();
@@ -486,6 +481,14 @@ public class Screen extends JFrame{
                     stmt.setString(2, temp_pass);
                     ResultSet rs=stmt.executeQuery();
                     if(rs.next()) {
+                        btn_edit.setVisible(true);
+                        btn_Logout_2.setVisible(true);
+                        list_product.setVisible(true);
+                        list_History.setVisible(true);
+                        btn_Order.setVisible(true);
+                        txt_change_Comment.setVisible(true);
+                        txt_Comment.setVisible(true);
+                        btn_addtofavorite.setVisible(true);
                         System.out.println("Done");
 
                         //asign Customer ID
@@ -511,7 +514,7 @@ public class Screen extends JFrame{
                         pannel_login.setVisible(false);
                     }
                     else {
-                        System.out.println("Error");
+                        JOptionPane.showMessageDialog(pannel_main, "Invalid Username or Password");
                     }
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
