@@ -876,7 +876,7 @@ public class Screen extends JFrame{
     //Insert data into JComboBox Sort
     private void insertSort(){
         arr_sort_code.clear();
-        arr_sort_code.add("Price: increase");
+        arr_sort_code.add("Price: Increase");
         arr_sort_code.add("Price: Decrease");
         arr_sort_code.add("Favorite");
         arr_sort_code.add("New");
