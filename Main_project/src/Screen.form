@@ -93,16 +93,14 @@
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <background color="-3482881"/>
+          <background color="-7430709"/>
           <foreground color="-5513999"/>
         </properties>
         <border type="none"/>
         <children>
           <component id="8882b" class="javax.swing.JTextField" binding="txt_Quantity">
             <constraints>
-              <grid row="6" column="2" row-span="3" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="100"/>
-              </grid>
+              <grid row="6" column="2" row-span="3" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <font name="JetBrains Mono" size="28"/>
@@ -115,6 +113,7 @@
             </constraints>
             <properties>
               <font name="JetBrains Mono" size="26"/>
+              <foreground color="-1"/>
               <text value="Quantity"/>
             </properties>
           </component>
@@ -172,6 +171,7 @@
             </constraints>
             <properties>
               <font name="JetBrains Mono" size="28"/>
+              <foreground color="-1"/>
               <text value="Discount"/>
             </properties>
           </component>
@@ -215,6 +215,7 @@
             </constraints>
             <properties>
               <font size="18"/>
+              <foreground color="-1"/>
               <text value="Show products by"/>
             </properties>
           </component>
@@ -343,7 +344,8 @@
               <background color="-9928773"/>
               <font name="JetBrains Mono" size="26"/>
               <foreground color="-1"/>
-              <text value="Order"/>
+              <icon value="images/icons8-shopping-cart-promotion-48.png"/>
+              <text value=""/>
             </properties>
           </component>
         </children>

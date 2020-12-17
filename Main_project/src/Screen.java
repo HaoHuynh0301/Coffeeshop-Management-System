@@ -413,6 +413,7 @@ public class Screen extends JFrame{
             @Override
             public void keyReleased(KeyEvent e) {
                 //Create temp model for inserting mnew data into JList Product
+                list_product.setSelectedIndex(-1);
                 DefaultListModel<String> temp_product_model=new DefaultListModel<>();
                 var temp_find_char=txt_find.getText();
                 ArrayList<Product> arr_temp_product=new ArrayList<>();;
