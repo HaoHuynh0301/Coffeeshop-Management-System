@@ -470,7 +470,7 @@
               </grid>
             </constraints>
             <properties>
-              <background color="-9657916"/>
+              <background color="-9928773"/>
               <font name="JetBrains Mono" size="36"/>
               <foreground color="-16777216"/>
               <icon value="images/plusicon.png"/>

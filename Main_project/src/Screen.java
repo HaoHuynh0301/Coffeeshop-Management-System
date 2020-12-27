@@ -13,6 +13,8 @@ import java.util.Random;
 import com.haothuan.Main_project.*;
 import com.sun.jdi.Value;
 
+//CHANGE YOUR DATABASE PASSWORD IN CONNECT DATA FUNCTION
+
 public class Screen extends JFrame{
     private JPanel pannel_main;
     private JTextField txt_email_input;
@@ -54,6 +56,7 @@ public class Screen extends JFrame{
     private JButton btn_text;
     private JButton btn_Submit;
     private Functions function=new Functions();
+    private int temp_product_id_1;
 
     //Customer's Point
     private int CUSTOMER_POINT;
@@ -250,7 +253,6 @@ public class Screen extends JFrame{
         btn_admin_edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                list_product.setSelectedIndex(-1);
                 try {
                     PreparedStatement stmt=(PreparedStatement) conn.prepareStatement("Call edit_product_infor(?, ?, ?)");
                     stmt.setString(1, arr_Products.get(list_product.getSelectedIndex()).getProduct_id());
@@ -264,9 +266,11 @@ public class Screen extends JFrame{
                             model.addElement(product.getProduct_id());
                         }
                         list_product.setModel(model);
+
                         JOptionPane.showMessageDialog(pannel_main, "Edit product information succeed!");
                         txt_discount_code.setText("");
                         txt_product_price.setText("");
+
                     }
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
@@ -413,7 +417,6 @@ public class Screen extends JFrame{
             @Override
             public void keyReleased(KeyEvent e) {
                 //Create temp model for inserting mnew data into JList Product
-                list_product.setSelectedIndex(-1);
                 DefaultListModel<String> temp_product_model=new DefaultListModel<>();
                 var temp_find_char=txt_find.getText();
                 ArrayList<Product> arr_temp_product=new ArrayList<>();;
@@ -630,11 +633,9 @@ public class Screen extends JFrame{
 
                     btn_Order.setText("Order");
                     int temp_quantity;
-                        temp_quantity=Integer.parseInt(eval);
-
+                    temp_quantity=Integer.parseInt(eval);
                     int temp_method_code=combobox_Method.getSelectedIndex();
                     try {
-
                         //Create Order_ID
                         BigInteger temp_order_id=generateMyBigNumber(18);
 
@@ -663,8 +664,9 @@ public class Screen extends JFrame{
                         if(rs_get_point.next()) {
                             if(rs_get_point.getInt("point")==MAX_POINT) {
                                 JOptionPane.showMessageDialog(pannel_main, "You recieve 1 discount code: BN01");
-                                PreparedStatement stmt_point_reset=(PreparedStatement) conn.prepareStatement("Call update_point(?)");
+                                PreparedStatement stmt_point_reset=(PreparedStatement) conn.prepareStatement("Call update_point(?, ?)");
                                 stmt_point_reset.setString(1, Customer_ID);
+                                stmt_point_reset.setInt(2, 0);
                                 var result_point_reset=stmt_point_reset.executeUpdate();
                                 if(result_point_reset!=-1) {
                                     System.out.println("Done");
@@ -673,7 +675,7 @@ public class Screen extends JFrame{
                         }
 
                         //increase point for Customer Ordering
-                        list_product.setSelectedIndex(-1);
+
                         insertCustomerHistory();
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
@@ -762,15 +764,13 @@ public class Screen extends JFrame{
                                 stmt_point_reset.setString(1, Customer_ID);
                                 var result_point_reset=stmt_point_reset.executeUpdate();
                                 if(result_point_reset!=-1) {
-                                    insertCustomerHistory();
                                     System.out.println("Done");
                                 }
                             }
                         }
-
                         //insert into table customer order product
-
-                        list_History.setSelectedIndex(-1);
+                        list_History.clearSelection();
+                        insertCustomerHistory();
                         txt_Quantity.setText("");
                         txt_Comment.setText("");
                     } catch (SQLException throwables) {
@@ -784,11 +784,14 @@ public class Screen extends JFrame{
         list_History.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                list_product.setSelectedIndex(-1);
                 if (!model_list_history.isEmpty()) {
                     FLAG_order=false;
                     int temp_history_selection=list_History.getSelectedIndex();
+                    if(temp_history_selection==-1) {
+                        temp_history_selection=0;
+                    }
                     var temp_order_id=arr_history.get(temp_history_selection).getOrder_id();
+                    System.out.println(temp_history_selection);
                     ORDER_ID=temp_order_id;
                     btn_Order.setText("Re-Order");
 
@@ -818,13 +821,16 @@ public class Screen extends JFrame{
             }
         }); //Done
 
-        //Event when select JList Products
         list_product.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if(!model.isEmpty()) {
-                    list_History.setSelectedIndex(-1);
+                    txt_Comment.setText("");
                     int temp_order_id=list_product.getSelectedIndex();
+                    if(temp_order_id==-1) {
+                        temp_order_id=0;
+                    }
+                    System.out.println(temp_order_id);
                     btn_Order.setText("Order");
                     if(FLAG_admin==true) {
                         txt_discount_code.setText(arr_Products.get(temp_order_id).getProduct_id());
@@ -833,7 +839,8 @@ public class Screen extends JFrame{
                     txt_product_price.setText(""+price);
                 }
             }
-        }); //Done
+        });
+
     }
 
 
@@ -911,7 +918,7 @@ public class Screen extends JFrame{
     public static BigInteger generateMyBigNumber(int bit){
         Random ran = new Random();
         BigInteger res = new BigInteger(bit, ran);
-        return  res;
+        return res;
     } //Done
 
 
